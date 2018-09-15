@@ -181,6 +181,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="constants.h" />
     <ClInclude Include="InputNewName.h" />
     <ClInclude Include="InputStudentInformation.h" />
     <ClInclude Include="List.h" />
