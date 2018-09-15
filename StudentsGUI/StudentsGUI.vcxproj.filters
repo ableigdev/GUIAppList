@@ -36,6 +36,9 @@
     <ClInclude Include="InputNewName.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="InputStudentInformation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="StudentsGUI.cpp">
@@ -48,6 +51,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="InputNewName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="InputStudentInformation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
