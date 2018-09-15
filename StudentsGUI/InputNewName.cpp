@@ -29,6 +29,8 @@ void InputNewName::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(InputNewName, CDialogEx)
+    ON_BN_CLICKED(IDOK, &InputNewName::OnBnClickedOk)
+    ON_BN_CLICKED(IDCANCEL, &InputNewName::OnBnClickedCancel)
 END_MESSAGE_MAP()
 
 
@@ -44,4 +46,26 @@ BOOL InputNewName::OnInitDialog()
     ((CEdit*)(Wnd))->SetSel(0, m_Name->GetLength());
 
     return FALSE;
+}
+
+void InputNewName::OnBnClickedOk()
+{
+    UpdateData(TRUE);
+    m_Name->TrimLeft();
+    m_Name->TrimRight();
+
+    if (*m_Name != __TEXT(""))
+    {
+        CDialogEx::OnOK();
+    }
+    else
+    {
+        this->MessageBox(__TEXT("You must not enter empty strings!"), __TEXT("Error"), MB_OK | MB_ICONSTOP);
+    }
+}
+
+
+void InputNewName::OnBnClickedCancel()
+{
+    CDialogEx::OnCancel();
 }
