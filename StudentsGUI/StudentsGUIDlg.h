@@ -4,6 +4,9 @@
 
 #pragma once
 #include "InputNewName.h"
+#include "InputStudentInformation.h"
+#include "Student.h"
+#include "NameList.h"
 
 // CStudentsGUIDlg dialog
 class CStudentsGUIDlg : public CDialogEx
@@ -21,13 +24,56 @@ public:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV support
 
 
+private:
+    InputNewName m_InputNewName;
+    InputStudentInformation m_InputStudInform;
+    NameList<Student> m_Group;
+    Student* m_Student;
+
+    int m_FontAveChar;
+    int m_MaxExtListStud;
+    int m_OldStudSelect;
+
+    CListBox m_ListStudInfo;
+    CListBox m_ListStudents;
+    CListBox m_ListGroups;
+
+    CString m_StudentName;
+    CString m_GroupName;
 // Implementation
 protected:
 	HICON m_hIcon;
-    InputNewName Input;
+    
+
+    void deleteStudentList();
+    void deleteStudentInformationList();
+    void deleteAllLists();
 
     void setButtonState(WORD wID[], WORD len, BOOL state);
+    
+    BOOL setStudentActions(BOOL state);
     void setFacultyActions(BOOL state);
+    void setAddFacultyActions(BOOL state);
+    void setSelectedActions();
+
+    void disableFaculty();
+    
+    void showStudent();
+    void showStudentInformation(const Student& student);
+    
+    int setNewSelect(CListBox& listBox, int& maxExtCx);
+    int changeItem(CListBox& listBox, int& maxExtCx, const std::basic_string<TYPESTRING>& name); // TODO: Need to refactor
+
+    void OutStr(Student& student); // TODO: Need to refactor
+
+    void CorrectListHScrl(CListBox &ListBox);
+    void CorrectListHScrlPart(CListBox &ListBox, int &MaxExtCx, int Index = 0);
+    void CorrectListHScrlDel(CListBox &ListBox, int &MaxExtCx, int Index);
+
+    void deleteStudent();
+    void modifyStudent();
+
+    inline int getStudentSelect() const;
 
 	// Generated message map functions
 	virtual BOOL OnInitDialog();
@@ -37,4 +83,10 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
     afx_msg void OnBnClickedButtonFacultyAdd();
+    afx_msg void OnBnClickedButtonFacultyChange();
+    afx_msg void OnBnClickedButtonFacultyGet();
+    afx_msg void OnBnClickedButtonFacultyDelete();
+    afx_msg void OnBnClickedButtonAddStudents();
+    afx_msg void OnBnClickedButtonDelete();
+    afx_msg void OnBnClickedButtonDeleteAllStudents();
 };
