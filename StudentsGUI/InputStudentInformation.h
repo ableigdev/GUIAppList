@@ -19,6 +19,10 @@ public:
 #endif
 
     void setChangeFlag(int flag);
+    void setStudent(Student* student);
+    void setGroup(NameList<Student>* group);
+    void setListBoxGroupList(CListBox*);
+    CListBox* getListBoxGroupList() const;
 
 private:
     void setActiveSurname();

@@ -53,6 +53,26 @@ void InputStudentInformation::setChangeFlag(int flag)
     m_ChangeFlag = flag;
 }
 
+void InputStudentInformation::setStudent(Student* student)
+{
+    m_Student = student;
+}
+
+void InputStudentInformation::setGroup(NameList<Student>* group)
+{
+    m_Group = group;
+}
+
+void InputStudentInformation::setListBoxGroupList(CListBox* listBox)
+{
+    m_ListBoxGroupList = listBox;
+}
+
+CListBox* InputStudentInformation::getListBoxGroupList() const
+{
+    return m_ListBoxGroupList;
+}
+
 void InputStudentInformation::setActiveSurname()
 {
     CWnd* wnd = GetDlgItem(IDC_STUDENT_EDIT_SURNAME);
