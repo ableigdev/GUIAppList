@@ -7,7 +7,7 @@ template <typename NODETYPE>
 class NameList : public List<NODETYPE>
 {
 public:
-    explicit NameList(const std::basic_string<TYPESTRING>& = "");
+    explicit NameList(const std::basic_string<TYPESTRING>& = __TEXT(""));
     explicit NameList(const NameList<NODETYPE>&);
     virtual ~NameList() = default;
 
