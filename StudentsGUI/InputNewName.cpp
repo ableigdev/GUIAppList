@@ -38,7 +38,7 @@ END_MESSAGE_MAP()
 BOOL InputNewName::OnInitDialog()
 {
     CDialogEx::OnInitDialog();
-    CString OutTitle = __TEXT("Input Name of ") + Title;
+    CString OutTitle = __TEXT("Input Name of ") + m_Title;
     SetWindowText((LPCTSTR)OutTitle);
     UpdateData(FALSE);
     CWnd* Wnd = this->GetDlgItem(IDC_EDIT_ENTER_NAME);
@@ -64,8 +64,28 @@ void InputNewName::OnBnClickedOk()
     }
 }
 
-
 void InputNewName::OnBnClickedCancel()
 {
     CDialogEx::OnCancel();
 }
+
+void InputNewName::setTitle(CString title)
+{
+    m_Title = title;
+}
+
+CString InputNewName::getTitle() const
+{
+    return m_Title;
+}
+
+void InputNewName::setName(CString* name)
+{
+    m_Name = name;
+}
+
+CString* InputNewName::getName() const
+{
+    return m_Name;
+}
+

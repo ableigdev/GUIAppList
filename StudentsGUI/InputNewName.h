@@ -16,7 +16,13 @@ public:
 	enum { IDD = IDD_DIALOG_NAME };
 #endif
 
-    CString Title;
+    void setTitle(CString title);
+    CString getTitle() const;
+    void setName(CString* name);
+    CString* getName() const;
+
+private:
+    CString m_Title;
     CString	*m_Name;
 
 protected:
