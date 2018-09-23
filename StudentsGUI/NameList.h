@@ -7,12 +7,14 @@ template <typename NODETYPE>
 class NameList : public List<NODETYPE>
 {
 public:
-    explicit NameList(const std::basic_string<TYPESTRING>& = __TEXT(""));
+    NameList();
+    explicit NameList(const std::basic_string<TYPESTRING>&);
     explicit NameList(const NameList<NODETYPE>&);
     virtual ~NameList() = default;
 
     void setNameClassList(const std::basic_string<TYPESTRING>&);
     std::basic_string<TYPESTRING> getNameClassList() const;
+    std::basic_string<TYPESTRING>& getNameClassList();
 
     const NameList<NODETYPE>& operator=(const NameList<NODETYPE>&);
 
@@ -26,6 +28,11 @@ private:
     std::basic_string<TYPESTRING> m_NameList;
 };
 
+template <typename NODETYPE>
+NameList<NODETYPE>::NameList()
+{
+    m_NameList.resize(80);
+}
 
 template <typename NODETYPE>
 NameList<NODETYPE>::NameList(const std::basic_string<TYPESTRING>& str)
@@ -51,6 +58,12 @@ void NameList<NODETYPE>::setNameClassList(const std::basic_string<TYPESTRING>& s
 
 template <typename NODETYPE>
 std::basic_string<TYPESTRING> NameList<NODETYPE>::getNameClassList() const
+{
+    return m_NameList;
+}
+
+template <typename NODETYPE>
+std::basic_string<TYPESTRING>& NameList<NODETYPE>::getNameClassList()
 {
     return m_NameList;
 }
