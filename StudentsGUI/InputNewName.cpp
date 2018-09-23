@@ -12,19 +12,24 @@
 IMPLEMENT_DYNAMIC(InputNewName, CDialogEx)
 
 InputNewName::InputNewName(CWnd* pParent /*=NULL*/)
-	: CDialogEx(IDD_DIALOG_NAME, pParent)
+	: CDialogEx(IDD_DIALOG_NAME, pParent),
+    m_CStringName(new CString[80])
 {
 
 }
 
 InputNewName::~InputNewName()
 {
+    if (m_CStringName != NULL)
+    {
+        delete[] m_CStringName;
+    }
 }
 
 void InputNewName::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
-    DDX_Text(pDX, IDC_EDIT_ENTER_NAME, *m_Name);
+    DDX_Text(pDX, IDC_EDIT_ENTER_NAME, *m_CStringName);
 }
 
 
@@ -43,7 +48,7 @@ BOOL InputNewName::OnInitDialog()
     UpdateData(FALSE);
     CWnd* Wnd = this->GetDlgItem(IDC_EDIT_ENTER_NAME);
     Wnd->SetFocus();
-    ((CEdit*)(Wnd))->SetSel(0, m_Name->GetLength());
+    ((CEdit*)(Wnd))->SetSel(0, m_CStringName->GetLength());
 
     return FALSE;
 }
@@ -51,11 +56,12 @@ BOOL InputNewName::OnInitDialog()
 void InputNewName::OnBnClickedOk()
 {
     UpdateData(TRUE);
-    m_Name->TrimLeft();
-    m_Name->TrimRight();
+    m_CStringName->TrimLeft();
+    m_CStringName->TrimRight();
 
-    if (*m_Name != __TEXT(""))
+    if (*m_CStringName != __TEXT(""))
     {
+        *m_Name = m_CStringName->GetString();
         CDialogEx::OnOK();
     }
     else
@@ -79,12 +85,12 @@ CString InputNewName::getTitle() const
     return m_Title;
 }
 
-void InputNewName::setName(CString* name)
+void InputNewName::setName(std::basic_string<TYPESTRING>* name)
 {
     m_Name = name;
 }
 
-CString* InputNewName::getName() const
+std::basic_string<TYPESTRING>* InputNewName::getName() const
 {
     return m_Name;
 }

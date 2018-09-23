@@ -2,6 +2,8 @@
 
 
 // InputNewName dialog
+#include "TypeStream.h"
+#include <string>
 
 class InputNewName : public CDialogEx
 {
@@ -18,12 +20,13 @@ public:
 
     void setTitle(CString title);
     CString getTitle() const;
-    void setName(CString* name);
-    CString* getName() const;
+    void setName(std::basic_string<TYPESTRING>* name);
+    std::basic_string<TYPESTRING>* getName() const;
 
 private:
     CString m_Title;
-    CString	*m_Name;
+    CString	*m_CStringName;
+    std::basic_string<TYPESTRING>* m_Name;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
