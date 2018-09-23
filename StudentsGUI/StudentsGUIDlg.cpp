@@ -83,6 +83,8 @@ BEGIN_MESSAGE_MAP(CStudentsGUIDlg, CDialogEx)
     ON_BN_CLICKED(IDC_BUTTON_ADD_STUDENTS, &CStudentsGUIDlg::OnBnClickedButtonAddStudents)
     ON_BN_CLICKED(IDC_BUTTON_DELETE, &CStudentsGUIDlg::OnBnClickedButtonDelete)
     ON_BN_CLICKED(IDC_BUTTON_DELETE_ALL_STUDENTS, &CStudentsGUIDlg::OnBnClickedButtonDeleteAllStudents)
+    ON_BN_CLICKED(IDC_BUTTON_ADD_GROUP, &CStudentsGUIDlg::OnBnClickedButtonAddGroup)
+    ON_BN_CLICKED(IDC_BUTTON_DELETE_ALL_GROUP, &CStudentsGUIDlg::OnBnClickedButtonDeleteAllGroup)
 END_MESSAGE_MAP()
 
 
@@ -123,7 +125,7 @@ BOOL CStudentsGUIDlg::OnInitDialog()
     {
         wnd->SetFocus();
     }
-    disableFaculty();
+    //disableFaculty();
     setSelectedActions();
 
     CString* str = new CString[50];
@@ -131,10 +133,10 @@ BOOL CStudentsGUIDlg::OnInitDialog()
     //Input.m_Name = str;
 
     m_InputStudInform.setListBoxGroupList(&m_ListGroups);
-    m_InputNewName.setTitle(__TEXT("group"));
-    //m_InputNewName.setName((CString*)m_Group.getNameClassList().c_str());
-    m_InputNewName.setName(str);
-    m_InputStudInform.setGroup(&m_Group);
+    //m_InputNewName.setTitle(__TEXT(""));
+    //m_InputNewName.setName((CString*)&m_Group.getNameClassList());
+    //m_InputNewName.setName(str);
+    //m_InputStudInform.setGroup(&m_Group);
     m_Student = NULL;
     m_InputStudInform.setStudent(m_Student);
 
@@ -226,10 +228,19 @@ void CStudentsGUIDlg::setFacultyActions(BOOL state)
         IDC_BUTTON_FACULTY_CHANGE, 
         IDC_BUTTON_FACULTY_DELETE,
         IDC_BUTTON_FACULTY_GET,
-        IDC_BUTTON_ADD_STUDENTS
+        IDC_BUTTON_ADD_GROUP
     };
-    setButtonState(wID, _LEN(wID, WORD), TRUE);
+    setButtonState(wID, _LEN(wID, WORD), state);
     setAddFacultyActions(!state);
+}
+
+void CStudentsGUIDlg::setGroupActions(BOOL state)
+{
+    WORD wID[] =
+    {
+        IDC_BUTTON_DELETE_ALL_GROUP,
+    };
+    setButtonState(wID, _LEN(wID, WORD), state);
 }
 
 void CStudentsGUIDlg::setButtonState(WORD wID[], WORD len, BOOL state)
@@ -245,6 +256,7 @@ BOOL CStudentsGUIDlg::setStudentActions(BOOL state)
     WORD wID[] = 
     {
         IDC_BUTTON_DELETE_ALL_STUDENTS,
+        IDC_BUTTON_ADD_STUDENTS,
         IDC_EDIT_STUDENT,
         IDC_LIST_STUDENTS,
         IDC_LIST_STUD_INFO
@@ -288,17 +300,18 @@ void CStudentsGUIDlg::OutStr(Student& student)
 void CStudentsGUIDlg::showStudent()
 {
     deleteStudentList();
-    if (setStudentActions(!m_Group))
+    m_CurrentGroup = &m_Faculty.getReferencesCurrentData();
+    if (setStudentActions(!m_CurrentGroup))
     {
-        m_Group.setCurrentNodeOnTheBegin();
-        for (size_t i = 0; i < m_Group.getSize(); ++i)
+        m_CurrentGroup->setCurrentNodeOnTheBegin();
+        for (size_t i = 0; i < m_CurrentGroup->getSize(); ++i)
         {
-            m_Student = &m_Group.getReferencesCurrentData();
+            m_Student = &m_CurrentGroup->getReferencesCurrentData();
             OutStr(*m_Student);
-            ++m_Group;
+            ++m_CurrentGroup;
         }
-        m_Group.setCurrentNodeOnTheBegin();
-        m_Student = &m_Group.getReferencesCurrentData();
+        m_CurrentGroup->setCurrentNodeOnTheBegin();
+        m_Student = &m_CurrentGroup->getReferencesCurrentData();
         showStudentInformation(*m_Student);
         m_OldStudSelect = LB_ERR;
     }
@@ -329,10 +342,11 @@ int CStudentsGUIDlg::changeItem(CListBox& listBox, int& maxExtCx, const std::bas
 
 void CStudentsGUIDlg::deleteStudent()
 {
-    m_Group.deleteElement(m_Group.getValueCurrentData());
-    if (!m_Group)
+    m_CurrentGroup = &m_Faculty.getReferencesCurrentData();
+    m_CurrentGroup->deleteElement(m_CurrentGroup->getValueCurrentData());
+    if (!m_CurrentGroup)
     {
-        m_Student = &m_Group.getReferencesCurrentData();
+        m_Student = &m_CurrentGroup->getReferencesCurrentData();
         m_OldStudSelect = setNewSelect(m_ListStudents, m_MaxExtListStud);
         showStudentInformation(*m_Student);
     }
@@ -350,7 +364,8 @@ void CStudentsGUIDlg::modifyStudent()
 
     if (m_InputStudInform.DoModal() == IDOK)
     {
-        m_Group.sortCurrentNodePtr();
+        m_CurrentGroup = &m_Faculty.getReferencesCurrentData();
+        m_CurrentGroup->sortCurrentNodePtr();
         m_OldStudSelect = changeItem(m_ListStudents, m_MaxExtListStud, m_Student->getSurname().c_str());
         showStudentInformation(*m_Student);
     }
@@ -468,11 +483,15 @@ int CStudentsGUIDlg::getStudentSelect() const
 
 void CStudentsGUIDlg::OnBnClickedButtonFacultyAdd()
 {
+    m_InputNewName.setTitle(__TEXT("Faculty"));
+    m_InputNewName.setName(&m_Faculty.getNameClassList());
+
     deleteAllLists();
 
     if (m_InputNewName.DoModal() == TRUE)
     {
         setFacultyActions(TRUE);
+        setGroupActions(TRUE);
     }
 
     SetFocus();
@@ -485,19 +504,21 @@ void CStudentsGUIDlg::OnBnClickedButtonFacultyChange()
 
 void CStudentsGUIDlg::OnBnClickedButtonFacultyGet()
 {
-    MessageBox(m_Group.getNameClassList().c_str(), __TEXT("Faculty name"));
+    MessageBox(m_Faculty.getNameClassList().c_str(), __TEXT("Faculty name"));
 }
 
 void CStudentsGUIDlg::OnBnClickedButtonFacultyDelete()
 {
     // TODO: OnButtonDeleteallstud();
     disableFaculty();
+    m_Faculty.deleteAllElements();
 }
 
 
 void CStudentsGUIDlg::OnBnClickedButtonAddStudents()
 {
     // TODO: Add your control notification handler code here
+    m_InputStudInform.setFaculty(&m_Faculty);
     m_InputStudInform.setChangeFlag(ADD);
     m_InputStudInform.DoModal();
     showStudent();
@@ -512,9 +533,37 @@ void CStudentsGUIDlg::OnBnClickedButtonDelete()
 void CStudentsGUIDlg::OnBnClickedButtonDeleteAllStudents()
 {
     // TODO: Add your control notification handler code here
-    m_Group.deleteAllElements();
+    m_CurrentGroup = &m_Faculty.getReferencesCurrentData();
+    m_CurrentGroup->deleteAllElements();
     deleteStudentList();
     setStudentActions(FALSE);
     m_StudentName = __TEXT("");
     UpdateData(FALSE);
+}
+
+void CStudentsGUIDlg::OnBnClickedButtonAddGroup()
+{
+    // TODO: Add your control notification handler code here
+    NameList<Student> newGroup;
+    m_InputNewName.setTitle(__TEXT("Group"));
+    m_InputNewName.setName(&newGroup.getNameClassList());
+
+    deleteAllLists();
+
+    if (m_InputNewName.DoModal() == TRUE)
+    {
+        m_Faculty.pushBack(newGroup);
+        setGroupActions(TRUE);
+        setStudentActions(TRUE);
+    }
+
+    SetFocus();
+}
+
+void CStudentsGUIDlg::OnBnClickedButtonDeleteAllGroup()
+{
+    // TODO: Add your control notification handler code here
+    setStudentActions(FALSE);
+    setGroupActions(FALSE);
+    m_Faculty.deleteAllElements();
 }

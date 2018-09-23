@@ -27,7 +27,8 @@ public:
 private:
     InputNewName m_InputNewName;
     InputStudentInformation m_InputStudInform;
-    NameList<Student> m_Group;
+    NameList<Student>* m_CurrentGroup;
+    NameList <NameList<Student>> m_Faculty;
     Student* m_Student;
 
     int m_FontAveChar;
@@ -53,6 +54,7 @@ protected:
     
     BOOL setStudentActions(BOOL state);
     void setFacultyActions(BOOL state);
+    void setGroupActions(BOOL state);
     void setAddFacultyActions(BOOL state);
     void setSelectedActions();
 
@@ -89,4 +91,6 @@ public:
     afx_msg void OnBnClickedButtonAddStudents();
     afx_msg void OnBnClickedButtonDelete();
     afx_msg void OnBnClickedButtonDeleteAllStudents();
+    afx_msg void OnBnClickedButtonAddGroup();
+    afx_msg void OnBnClickedButtonDeleteAllGroup();
 };
