@@ -63,6 +63,11 @@ void InputStudentInformation::setGroup(NameList<Student>* group)
     m_Group = group;
 }
 
+void InputStudentInformation::setFaculty(NameList<NameList<Student>>* faculty)
+{
+    m_Faculty = faculty;
+}
+
 void InputStudentInformation::setListBoxGroupList(CListBox* listBox)
 {
     m_ListBoxGroupList = listBox;
@@ -122,6 +127,11 @@ BOOL InputStudentInformation::OnInitDialog()
     }
 
     setActiveSurname();
+
+    if (m_Faculty != NULL)
+    {
+        m_ComboGroupList.AddString((LPCTSTR)m_Faculty->getReferencesCurrentData().getNameClassList().c_str());
+    }
     
     return FALSE;
 }

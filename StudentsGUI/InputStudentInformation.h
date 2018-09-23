@@ -21,6 +21,7 @@ public:
     void setChangeFlag(int flag);
     void setStudent(Student* student);
     void setGroup(NameList<Student>* group);
+    void setFaculty(NameList<NameList<Student>>* faculty);
     void setListBoxGroupList(CListBox*);
     CListBox* getListBoxGroupList() const;
 
@@ -33,6 +34,7 @@ private:
     CComboBox m_ComboGroupList;
     CListBox* m_ListBoxGroupList;
     NameList<Student>* m_Group;
+    NameList<NameList<Student>>* m_Faculty;
     Student* m_Student;
     Student m_WorkStudent;
     int m_ChangeFlag;
