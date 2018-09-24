@@ -1,11 +1,14 @@
 #include "stdafx.h"
 #include "Student.h"
+#include "constants.h"
 
 Student::Student()
     : m_BirthYear(0),
     m_AverageGrade(0.0)
 {
-
+    m_Name.resize(STRING_SIZE);
+    m_Surname.resize(STRING_SIZE);
+    m_Lastname.resize(STRING_SIZE);
 }
 
 Student::Student(const Student& someStudent)

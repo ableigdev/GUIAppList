@@ -41,9 +41,9 @@ private:
     int compareStudents(const Student&) const;
 
 private:
-    std::basic_string<TYPESTRING> m_Name{};
-    std::basic_string<TYPESTRING> m_Surname{};
-    std::basic_string<TYPESTRING> m_Lastname{};
+    std::basic_string<TYPESTRING> m_Name {};
+    std::basic_string<TYPESTRING> m_Surname {};
+    std::basic_string<TYPESTRING> m_Lastname {};
     short int m_BirthYear;
     float m_AverageGrade;
 };
