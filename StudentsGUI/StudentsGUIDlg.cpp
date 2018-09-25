@@ -301,14 +301,14 @@ void CStudentsGUIDlg::showStudent()
 {
     deleteStudentList();
     m_CurrentGroup = &m_Faculty.getReferencesCurrentData();
-    if (setStudentActions(!m_CurrentGroup))
+    if (setStudentActions(!m_CurrentGroup->isEmpty()))
     {
         m_CurrentGroup->setCurrentNodeOnTheBegin();
         for (size_t i = 0; i < m_CurrentGroup->getSize(); ++i)
         {
             m_Student = &m_CurrentGroup->getReferencesCurrentData();
             OutStr(*m_Student);
-            ++m_CurrentGroup;
+            m_CurrentGroup->operator++();
         }
         m_CurrentGroup->setCurrentNodeOnTheBegin();
         m_Student = &m_CurrentGroup->getReferencesCurrentData();
@@ -376,15 +376,15 @@ void CStudentsGUIDlg::showStudentInformation(const Student& student)
     CString buf;
     deleteStudentInformationList();
 
-    buf.Format(__TEXT("Surname      : %s"), student.getSurname());
+    buf.Format(__TEXT("Surname      : %s"), student.getSurname().c_str());
     m_ListStudInfo.AddString((LPCTSTR)buf);
-    buf.Format(__TEXT("Name      : %s"), student.getName());
+    buf.Format(__TEXT("Name      : %s"), student.getName().c_str());
     m_ListStudInfo.AddString((LPCTSTR)buf);
-    buf.Format(__TEXT("Lastname      : %s"), student.getLastname());
+    buf.Format(__TEXT("Lastname      : %s"), student.getLastname().c_str());
     m_ListStudInfo.AddString((LPCTSTR)buf);
     buf.Format(__TEXT("Birth Year      : %i"), student.getBirthYear());
     m_ListStudInfo.AddString((LPCTSTR)buf);
-    buf.Format(__TEXT("Average Grade      : %s"), student.getAverageGrade());
+    buf.Format(__TEXT("Average Grade      : %4.2f"), student.getAverageGrade());
     m_ListStudInfo.AddString((LPCTSTR)buf);
     
     CorrectListHScrl(m_ListStudInfo);
