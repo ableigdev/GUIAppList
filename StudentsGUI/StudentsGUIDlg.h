@@ -33,7 +33,9 @@ private:
 
     int m_FontAveChar;
     int m_MaxExtListStud;
+    int m_MaxExtListGroup;
     int m_OldStudSelect;
+    int m_OldGroupSelect;
 
     CListBox m_ListStudInfo;
     CListBox m_ListStudents;
@@ -49,24 +51,27 @@ protected:
     void deleteStudentList();
     void deleteStudentInformationList();
     void deleteAllLists();
+    void deleteGroupList();
 
     void setButtonState(WORD wID[], WORD len, BOOL state);
     
     BOOL setStudentActions(BOOL state);
     void setFacultyActions(BOOL state);
-    void setGroupActions(BOOL state);
+    BOOL setGroupActions(BOOL state);
     void setAddFacultyActions(BOOL state);
-    void setSelectedActions();
+    void setSelectedActions(BOOL state);
 
     void disableFaculty();
     
     void showStudent();
     void showStudentInformation(const Student& student);
+    void showGroups();
     
     int setNewSelect(CListBox& listBox, int& maxExtCx);
     int changeItem(CListBox& listBox, int& maxExtCx, const std::basic_string<TYPESTRING>& name); // TODO: Need to refactor
 
-    void OutStr(Student& student); // TODO: Need to refactor
+    void showString(Student& student); 
+    void showString(NameList<Student>& group);
 
     void CorrectListHScrl(CListBox &ListBox);
     void CorrectListHScrlPart(CListBox &ListBox, int &MaxExtCx, int Index = 0);
@@ -76,6 +81,7 @@ protected:
     void modifyStudent();
 
     inline int getStudentSelect() const;
+    inline int getGroupSelect() const;
 
 	// Generated message map functions
 	virtual BOOL OnInitDialog();
@@ -93,4 +99,9 @@ public:
     afx_msg void OnBnClickedButtonDeleteAllStudents();
     afx_msg void OnBnClickedButtonAddGroup();
     afx_msg void OnBnClickedButtonDeleteAllGroup();
+    afx_msg void OnEnChangeEditStudent();
+    afx_msg void OnLbnSelchangeListStudents();
+    afx_msg void OnEnChangeEditGroup();
+    afx_msg void OnLbnSelchangeListGroups();
+    afx_msg void OnBnClickedButtonChange();
 };
