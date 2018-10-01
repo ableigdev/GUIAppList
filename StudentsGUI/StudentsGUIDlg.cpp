@@ -299,7 +299,7 @@ void CStudentsGUIDlg::showStudent()
 {
     deleteStudentList();
     m_CurrentGroup = &m_Faculty.getReferencesCurrentData();
-    if (setStudentActions(!m_CurrentGroup->isEmpty()))
+    if (!m_CurrentGroup->isEmpty())
     {
         m_CurrentGroup->setCurrentNodeOnTheBegin();
         for (size_t i = 0; i < m_CurrentGroup->getSize(); ++i)
@@ -653,6 +653,7 @@ void CStudentsGUIDlg::OnLbnSelchangeListGroups()
         for (; selected < m_OldGroupSelect; --m_OldGroupSelect, --m_Faculty);
         for (; selected > m_OldGroupSelect; ++m_OldGroupSelect, ++m_Faculty);
 
+        showStudent();
         setSelectedActions(TRUE);
     }
 }
