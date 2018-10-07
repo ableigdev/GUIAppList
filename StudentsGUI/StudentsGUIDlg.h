@@ -7,6 +7,7 @@
 #include "InputStudentInformation.h"
 #include "Student.h"
 #include "NameList.h"
+#include "SelectAction.h"
 
 // CStudentsGUIDlg dialog
 class CStudentsGUIDlg : public CDialogEx
@@ -30,6 +31,7 @@ private:
     NameList<Student>* m_CurrentGroup;
     NameList <NameList<Student>> m_Faculty;
     Student* m_Student;
+    SelectAction m_SelectAction;
 
     int m_FontAveChar;
     int m_MaxExtListStud;
@@ -47,11 +49,12 @@ private:
 protected:
 	HICON m_hIcon;
     
-
     void deleteStudentList();
     void deleteStudentInformationList();
     void deleteAllLists();
     void deleteGroupList();
+    void deleteSelectedStudent();
+    void deleteSelectedGroup();
 
     void setButtonState(WORD wID[], WORD len, BOOL state);
     

@@ -298,20 +298,23 @@ void CStudentsGUIDlg::showString(Student& student)
 void CStudentsGUIDlg::showStudent()
 {
     deleteStudentList();
-    m_CurrentGroup = &m_Faculty.getReferencesCurrentData();
-    if (!m_CurrentGroup->isEmpty())
+    if (!m_Faculty.isEmpty())
     {
-        m_CurrentGroup->setCurrentNodeOnTheBegin();
-        for (size_t i = 0; i < m_CurrentGroup->getSize(); ++i)
+        m_CurrentGroup = &m_Faculty.getReferencesCurrentData();
+        if (!m_CurrentGroup->isEmpty())
         {
+            m_CurrentGroup->setCurrentNodeOnTheBegin();
+            for (size_t i = 0; i < m_CurrentGroup->getSize(); ++i)
+            {
+                m_Student = &m_CurrentGroup->getReferencesCurrentData();
+                showString(*m_Student);
+                m_CurrentGroup->operator++();
+            }
+            m_CurrentGroup->setCurrentNodeOnTheBegin();
             m_Student = &m_CurrentGroup->getReferencesCurrentData();
-            showString(*m_Student);
-            m_CurrentGroup->operator++();
+            showStudentInformation(*m_Student);
+            m_OldStudSelect = LB_ERR;
         }
-        m_CurrentGroup->setCurrentNodeOnTheBegin();
-        m_Student = &m_CurrentGroup->getReferencesCurrentData();
-        showStudentInformation(*m_Student);
-        m_OldStudSelect = LB_ERR;
     }
 }
 
@@ -512,7 +515,7 @@ void CStudentsGUIDlg::OnBnClickedButtonFacultyGet()
 
 void CStudentsGUIDlg::OnBnClickedButtonFacultyDelete()
 {
-    // TODO: OnButtonDeleteallstud();
+    OnBnClickedButtonDeleteAllGroup();
     disableFaculty();
     m_Faculty.deleteAllElements();
 }
@@ -531,8 +534,76 @@ void CStudentsGUIDlg::OnBnClickedButtonAddStudents()
 
 void CStudentsGUIDlg::OnBnClickedButtonDelete()
 {
-    // TODO: Add your control notification handler code here
-    deleteStudent();
+    int selectedStudent = getStudentSelect();
+    int selectedGroup = getGroupSelect();
+
+    if (selectedGroup != LB_ERR && selectedStudent != LB_ERR)
+    {
+        m_SelectAction.setActionName(__TEXT("delete"));
+        if (m_SelectAction.DoModal() == TRUE)
+        {
+            if (m_SelectAction.getAnswer() == GROUP_ANSWER)
+            {
+                deleteSelectedGroup();
+                showGroups();
+                showStudent();
+            }
+            else
+            {
+                deleteSelectedStudent();
+                showStudent();
+            }
+            return;
+        }
+    }
+
+    if (selectedGroup != LB_ERR && selectedStudent == LB_ERR)
+    {
+        deleteSelectedGroup();
+        showGroups();
+        showStudent();
+        return;
+    }
+
+    if (selectedGroup == LB_ERR && selectedStudent != LB_ERR)
+    {
+        deleteSelectedStudent();
+        showStudent();
+    }
+}
+
+void CStudentsGUIDlg::deleteSelectedStudent()
+{
+    m_CurrentGroup->deleteElement(*m_Student);
+    if (!m_CurrentGroup->isEmpty())
+    {
+        m_CurrentGroup->setCurrentNodeOnTheBegin();
+        m_Student = &m_CurrentGroup->getReferencesCurrentData();
+    }
+    else
+    {
+        deleteStudentList();
+        setSelectedActions(FALSE);
+        m_Student = NULL;
+    }
+}
+
+void CStudentsGUIDlg::deleteSelectedGroup()
+{
+    m_Faculty.deleteElement(*m_CurrentGroup);
+    if (!m_Faculty.isEmpty())
+    {
+        m_Faculty.setCurrentNodeOnTheBegin();
+        m_CurrentGroup = &m_Faculty.getReferencesCurrentData();
+    }
+    else
+    {
+        deleteGroupList();
+        deleteStudentList();
+        setStudentActions(FALSE);
+        setSelectedActions(FALSE);
+        m_CurrentGroup = NULL;
+    }
 }
 
 void CStudentsGUIDlg::OnBnClickedButtonDeleteAllStudents()
