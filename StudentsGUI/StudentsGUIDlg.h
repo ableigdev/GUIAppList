@@ -56,6 +56,9 @@ protected:
     void deleteSelectedStudent();
     void deleteSelectedGroup();
 
+    void changeSelectedStudent();
+    void changeSelectedGroup();
+
     void setButtonState(WORD wID[], WORD len, BOOL state);
     
     BOOL setStudentActions(BOOL state);

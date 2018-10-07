@@ -760,5 +760,47 @@ void CStudentsGUIDlg::deleteGroupList()
 
 void CStudentsGUIDlg::OnBnClickedButtonChange()
 {
-    // TODO: Add your control notification handler code here
+    int selectedStudent = getStudentSelect();
+    int selectedGroup = getGroupSelect();
+
+    if (selectedGroup != LB_ERR && selectedStudent != LB_ERR)
+    {
+        m_SelectAction.setActionName(__TEXT("change"));
+        if (m_SelectAction.DoModal() == TRUE)
+        {
+            if (m_SelectAction.getAnswer() == GROUP_ANSWER)
+            {
+                m_InputNewName.DoModal();
+                showGroups();
+                showStudent();
+            }
+            else
+            {
+                showStudent();
+            }
+            return;
+        }
+    }
+
+    if (selectedGroup != LB_ERR && selectedStudent == LB_ERR)
+    {
+        m_InputNewName.DoModal();
+        showGroups();
+        showStudent();
+        return;
+    }
+
+    if (selectedGroup == LB_ERR && selectedStudent != LB_ERR)
+    {
+        showStudent();
+    }
+}
+
+void CStudentsGUIDlg::changeSelectedGroup()
+{
+    m_InputNewName.setTitle(__TEXT("Group"));
+    std::basic_string<TYPESTRING> str;
+    str.resize(STRING_SIZE);
+    m_InputNewName.setName(&str);
+    m_InputNewName.DoModal();
 }
