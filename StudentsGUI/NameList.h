@@ -9,7 +9,7 @@ class NameList : public List<NODETYPE>
 public:
     NameList();
     explicit NameList(const std::basic_string<TYPESTRING>&);
-    explicit NameList(const NameList<NODETYPE>&);
+    NameList(const NameList<NODETYPE>&);
     virtual ~NameList() = default;
 
     void setNameClassList(const std::basic_string<TYPESTRING>&);

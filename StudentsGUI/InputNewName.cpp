@@ -5,6 +5,7 @@
 #include "StudentsGUI.h"
 #include "InputNewName.h"
 #include "afxdialogex.h"
+#include "constants.h"
 
 
 // InputNewName dialog
@@ -13,7 +14,7 @@ IMPLEMENT_DYNAMIC(InputNewName, CDialogEx)
 
 InputNewName::InputNewName(CWnd* pParent /*=NULL*/)
 	: CDialogEx(IDD_DIALOG_NAME, pParent),
-    m_CStringName(new CString[80])
+    m_CStringName(new CString[STRING_SIZE])
 {
 
 }
@@ -43,12 +44,12 @@ END_MESSAGE_MAP()
 BOOL InputNewName::OnInitDialog()
 {
     CDialogEx::OnInitDialog();
-    CString OutTitle = __TEXT("Input Name of ") + m_Title;
-    SetWindowText((LPCTSTR)OutTitle);
+    CString outTitle = __TEXT("Input Name of ") + m_Title;
+    SetWindowText((LPCTSTR)outTitle);
     UpdateData(FALSE);
-    CWnd* Wnd = this->GetDlgItem(IDC_EDIT_ENTER_NAME);
-    Wnd->SetFocus();
-    ((CEdit*)(Wnd))->SetSel(0, m_CStringName->GetLength());
+    CWnd* wnd = this->GetDlgItem(IDC_EDIT_ENTER_NAME);
+    wnd->SetFocus();
+    ((CEdit*)(wnd))->SetSel(0, m_CStringName->GetLength());
 
     return FALSE;
 }
