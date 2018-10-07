@@ -5,7 +5,7 @@
 #include "StudentsGUI.h"
 #include "SelectAction.h"
 #include "afxdialogex.h"
-
+#include "constants.h"
 
 // SelectAction dialog
 
@@ -28,21 +28,40 @@ void SelectAction::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(SelectAction, CDialogEx)
+    ON_BN_CLICKED(IDC_BUTTON_CHOOSE_GROUP, &SelectAction::OnBnClickedButtonChooseGroup)
+    ON_BN_CLICKED(IDC_BUTTON_CHOOSE_STUDENT, &SelectAction::OnBnClickedButtonChooseStudent)
 END_MESSAGE_MAP()
 
 
 // SelectAction message handlers
-void SelectAction::setActionName(const std::basic_string<TYPESTRING>& name)
+void SelectAction::setActionName(CString name)
 {
     m_ActionName = name;
 }
 
-void SelectAction::setGroupName(const std::basic_string<TYPESTRING>& name)
+int SelectAction::getAnswer() const
 {
-    m_GroupName = name;
+    return m_Answer;
 }
 
-void SelectAction::setStudentName(const std::basic_string<TYPESTRING>& name)
+BOOL SelectAction::OnInitDialog()
 {
-    m_StudentName = name;
+    CDialogEx::OnInitDialog();
+    CString outTitle = __TEXT("What would you like to " + m_ActionName + "?");
+    SetWindowText((LPCTSTR)outTitle);
+    m_Answer = UNKNOWN_ANSWER;
+
+    return FALSE;
+}
+
+void SelectAction::OnBnClickedButtonChooseGroup()
+{
+    m_Answer = GROUP_ANSWER;
+    CDialogEx::OnOK();
+}
+
+void SelectAction::OnBnClickedButtonChooseStudent()
+{
+    m_Answer = STUDENT_ANSWER;
+    CDialogEx::OnOK();
 }

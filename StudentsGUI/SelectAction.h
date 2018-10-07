@@ -19,19 +19,19 @@ public:
 #endif
 
 public:
-    void setActionName(const std::basic_string<TYPESTRING>& name);
-    void setGroupName(const std::basic_string<TYPESTRING>& name);
-    void setStudentName(const std::basic_string<TYPESTRING>& name);
+    void setActionName(CString name);
+    int getAnswer() const;
 
 private:
-    std::basic_string<TYPESTRING> m_ActionName {};
-    std::basic_string<TYPESTRING> m_GroupName {};
-    std::basic_string<TYPESTRING> m_StudentName {};
-    CButton* m_SelectGroup;
-    CButton* m_SelectStudent;
+    CString m_ActionName;
+    int m_Answer;
     
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+    virtual BOOL OnInitDialog();
 
 	DECLARE_MESSAGE_MAP()
+public:
+    afx_msg void OnBnClickedButtonChooseGroup();
+    afx_msg void OnBnClickedButtonChooseStudent();
 };
