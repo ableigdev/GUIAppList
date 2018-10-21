@@ -377,15 +377,15 @@ void CStudentsGUIDlg::showStudentInformation(const Student& student)
     CString buf;
     deleteStudentInformationList();
 
-    buf.Format(__TEXT("Surname      : %s"), student.getSurname().c_str());
+    buf.Format(__TEXT("Surname              : %s"), student.getSurname().c_str());
     m_ListStudInfo.AddString((LPCTSTR)buf);
-    buf.Format(__TEXT("Name      : %s"), student.getName().c_str());
+    buf.Format(__TEXT("Name                   : %s"), student.getName().c_str());
     m_ListStudInfo.AddString((LPCTSTR)buf);
-    buf.Format(__TEXT("Lastname      : %s"), student.getLastname().c_str());
+    buf.Format(__TEXT("Lastname             : %s"), student.getLastname().c_str());
     m_ListStudInfo.AddString((LPCTSTR)buf);
-    buf.Format(__TEXT("Birth Year      : %i"), student.getBirthYear());
+    buf.Format(__TEXT("Birth Year             : %i"), student.getBirthYear());
     m_ListStudInfo.AddString((LPCTSTR)buf);
-    buf.Format(__TEXT("Average Grade      : %4.2f"), student.getAverageGrade());
+    buf.Format(__TEXT("Average Grade    : %4.2f"), student.getAverageGrade());
     m_ListStudInfo.AddString((LPCTSTR)buf);
     
     CorrectListHScrl(m_ListStudInfo);
@@ -770,7 +770,7 @@ void CStudentsGUIDlg::OnBnClickedButtonChange()
         {
             if (m_SelectAction.getAnswer() == GROUP_ANSWER)
             {
-                m_InputNewName.DoModal();
+                changeSelectedGroup();
                 showGroups();
                 showStudent();
             }
@@ -784,7 +784,7 @@ void CStudentsGUIDlg::OnBnClickedButtonChange()
 
     if (selectedGroup != LB_ERR && selectedStudent == LB_ERR)
     {
-        m_InputNewName.DoModal();
+        changeSelectedGroup();
         showGroups();
         showStudent();
         return;
@@ -792,6 +792,7 @@ void CStudentsGUIDlg::OnBnClickedButtonChange()
 
     if (selectedGroup == LB_ERR && selectedStudent != LB_ERR)
     {
+        changeSelectedStudent();
         showStudent();
     }
 }
@@ -799,8 +800,13 @@ void CStudentsGUIDlg::OnBnClickedButtonChange()
 void CStudentsGUIDlg::changeSelectedGroup()
 {
     m_InputNewName.setTitle(__TEXT("Group"));
-    std::basic_string<TYPESTRING> str;
-    str.resize(STRING_SIZE);
-    m_InputNewName.setName(&str);
+    m_InputNewName.setName(&m_CurrentGroup->getNameClassList());
     m_InputNewName.DoModal();
+}
+
+void CStudentsGUIDlg::changeSelectedStudent()
+{
+    m_InputStudInform.setFaculty(&m_Faculty);
+    m_InputStudInform.setChangeFlag(CHANGE);
+    m_InputStudInform.DoModal();
 }
