@@ -290,7 +290,9 @@ void CStudentsGUIDlg::disableFaculty()
 
 void CStudentsGUIDlg::showString(Student& student)
 {
-    CorrectListHScrlPart(m_ListStudents, m_MaxExtListStud, m_ListStudents.AddString((LPCTSTR)student.getName().c_str()));
+    std::basic_string<TYPESTRING> str(student.getSurname());
+    str.append(__TEXT(" ")).append(student.getName().substr(0, 1)).append(__TEXT(". ")).append(student.getLastname().substr(0, 1)).append(__TEXT("."));
+    CorrectListHScrlPart(m_ListStudents, m_MaxExtListStud, m_ListStudents.AddString((LPCTSTR)str.c_str()));
 }
 
 void CStudentsGUIDlg::showStudent()
