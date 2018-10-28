@@ -108,29 +108,26 @@ bool InputStudentInformation::addStudent()
 
     auto currentSelect = m_ComboGroupList.GetCurSel();
 
-    if (currentSelect != -1)
+    if (checkConstruction())
     {
-        if (checkConstruction())
+        if (m_ChangeFlag == ADD)
         {
-            if (m_ChangeFlag == ADD)
+            m_Faculty->setCurrentNodeOnTheBegin();
+            for (size_t i = 0; i < m_Faculty->getSize(); ++i)
             {
-                m_Faculty->setCurrentNodeOnTheBegin();
-                for (size_t i = 0; i < m_Faculty->getSize(); ++i)
+                if (i == currentSelect)
                 {
-                    if (i == currentSelect)
-                    {
-                        m_Faculty->getReferencesCurrentData().pushInSortList(*m_Student);
-                        break;
-                    }
-                    m_Faculty->operator++();
+                    m_Faculty->getReferencesCurrentData().pushInSortList(*m_Student);
+                    break;
                 }
+                m_Faculty->operator++();
             }
-            return true;
         }
-        MessageBox(__TEXT("Surname or name is empty"), __TEXT("Error"), MB_OK | MB_ICONSTOP);
+        return true;
     }
+    MessageBox(__TEXT("Surname or name is empty"), __TEXT("Error"), MB_OK | MB_ICONSTOP);
+    
     m_IsModify = true;
-    MessageBox(__TEXT("Group was not chosen"), __TEXT("Error"), MB_OK | MB_ICONSTOP);
     return false;
 }
 
