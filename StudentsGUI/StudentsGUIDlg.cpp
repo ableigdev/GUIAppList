@@ -235,7 +235,6 @@ BOOL CStudentsGUIDlg::setGroupActions(BOOL state)
 {
     WORD wID[] =
     {
-        IDC_BUTTON_DELETE_ALL_GROUP,
         IDC_EDIT_GROUP,
         IDC_LIST_GROUPS
     };
@@ -255,7 +254,6 @@ BOOL CStudentsGUIDlg::setStudentActions(BOOL state)
 {
     WORD wID[] = 
     {
-        IDC_BUTTON_DELETE_ALL_STUDENTS,
         IDC_BUTTON_ADD_STUDENTS,
         IDC_EDIT_STUDENT,
         IDC_LIST_STUDENTS,
@@ -526,10 +524,9 @@ void CStudentsGUIDlg::OnBnClickedButtonAddStudents()
     // TODO: Add your control notification handler code here
     m_InputStudInform.setFaculty(&m_Faculty);
     m_InputStudInform.setChangeFlag(ADD);
-    if (m_InputStudInform.DoModal() == TRUE)
-    {
-        showStudent();
-    }
+    m_InputStudInform.DoModal();
+    GetDlgItem(IDC_BUTTON_DELETE_ALL_STUDENTS)->EnableWindow(TRUE);
+    showStudent();
 }
 
 void CStudentsGUIDlg::OnBnClickedButtonDelete()
@@ -608,13 +605,19 @@ void CStudentsGUIDlg::deleteSelectedGroup()
 
 void CStudentsGUIDlg::OnBnClickedButtonDeleteAllStudents()
 {
-    // TODO: Add your control notification handler code here
-    m_CurrentGroup = &m_Faculty.getReferencesCurrentData();
-    m_CurrentGroup->deleteAllElements();
-    deleteStudentList();
-    setSelectedActions(FALSE);
-    m_StudentName = __TEXT("");
-    UpdateData(FALSE);
+    if (getGroupSelect() != LB_ERR)
+    {
+        m_CurrentGroup = &m_Faculty.getReferencesCurrentData();
+        m_CurrentGroup->deleteAllElements();
+        deleteStudentList();
+        setSelectedActions(FALSE);
+        m_StudentName = __TEXT("");
+        UpdateData(FALSE);
+    }
+    else
+    {
+        MessageBox(__TEXT("The group was not chosen!"), __TEXT("Error"), MB_OK | MB_ICONSTOP);
+    }
 }
 
 void CStudentsGUIDlg::OnBnClickedButtonAddGroup()
@@ -630,6 +633,7 @@ void CStudentsGUIDlg::OnBnClickedButtonAddGroup()
     {
         m_Faculty.pushBack(newGroup);
         setGroupActions(TRUE);
+        GetDlgItem(IDC_BUTTON_DELETE_ALL_GROUP)->EnableWindow(TRUE);
         setStudentActions(TRUE);
         showGroups();
     }
@@ -641,6 +645,10 @@ void CStudentsGUIDlg::OnBnClickedButtonDeleteAllGroup()
 {
     setStudentActions(FALSE);
     setGroupActions(FALSE);
+    GetDlgItem(IDC_BUTTON_DELETE_ALL_GROUP)->EnableWindow(FALSE);
+    GetDlgItem(IDC_BUTTON_DELETE_ALL_STUDENTS)->EnableWindow(FALSE);
+    GetDlgItem(IDC_EDIT_GROUP)->SetWindowTextW(__TEXT(""));
+    GetDlgItem(IDC_EDIT_STUDENT)->SetWindowTextW(__TEXT(""));
     setSelectedActions(FALSE);
     deleteStudentList();
     deleteGroupList();
