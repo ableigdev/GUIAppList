@@ -776,6 +776,7 @@ void CStudentsGUIDlg::OnBnClickedButtonChange()
             }
             else
             {
+                changeSelectedStudent();
                 showStudent();
             }
             return;
@@ -806,7 +807,7 @@ void CStudentsGUIDlg::changeSelectedGroup()
 
 void CStudentsGUIDlg::changeSelectedStudent()
 {
-    m_InputStudInform.setFaculty(&m_Faculty);
+    m_InputStudInform.setStudent(m_Student);
     m_InputStudInform.setChangeFlag(CHANGE);
     m_InputStudInform.DoModal();
 }
