@@ -56,7 +56,6 @@ BEGIN_MESSAGE_MAP(InputStudentInformation, CDialogEx)
     ON_BN_CLICKED(IDC_STUDENT_BUTTON_NEXT, &InputStudentInformation::OnBnClickedStudentButtonNext)
     ON_BN_CLICKED(IDOK, &InputStudentInformation::OnBnClickedOk)
     ON_BN_CLICKED(IDCANCEL, &InputStudentInformation::OnBnClickedCancel)
-    ON_CBN_SELCHANGE(IDC_COMBO_GROUPS, &InputStudentInformation::OnCbnSelchangeComboGroups)
 END_MESSAGE_MAP()
 
 
@@ -115,7 +114,6 @@ bool InputStudentInformation::addStudent()
         {
             if (m_ChangeFlag == ADD)
             {
-                //m_Faculty->pushInSortList(*m_Student);
                 m_Faculty->setCurrentNodeOnTheBegin();
                 for (size_t i = 0; i < m_Faculty->getSize(); ++i)
                 {
@@ -151,6 +149,7 @@ BOOL InputStudentInformation::OnInitDialog()
         m_WorkStudent = *m_Student;
         m_IsModify = false;
         GetDlgItem(IDC_STUDENT_BUTTON_NEXT)->EnableWindow(FALSE);
+        GetDlgItem(IDC_COMBO_GROUPS)->EnableWindow(FALSE);
         SetDefID(IDOK);
         UpdateData(FALSE);
     }
@@ -166,6 +165,7 @@ BOOL InputStudentInformation::OnInitDialog()
             m_Faculty->operator++();
         }
         m_Faculty->setCurrentNodeOnTheBegin();
+        m_ComboGroupList.SetCurSel(0);
     }
     
     return FALSE;
@@ -197,11 +197,4 @@ void InputStudentInformation::OnBnClickedCancel()
         *m_Student = m_WorkStudent;
     }
     CDialogEx::OnCancel();
-}
-
-
-void InputStudentInformation::OnCbnSelchangeComboGroups()
-{
-    // TODO: Add your control notification handler code here
-    auto result = m_ComboGroupList.GetCurSel();
 }
