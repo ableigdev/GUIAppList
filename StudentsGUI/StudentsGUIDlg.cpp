@@ -631,7 +631,7 @@ void CStudentsGUIDlg::OnBnClickedButtonAddGroup()
     if (m_InputNewName.DoModal() == TRUE)
     {
         deleteAllLists();
-        m_Faculty.pushBack(newGroup);
+        m_Faculty.pushInSortList(newGroup);
         setGroupActions(TRUE);
         GetDlgItem(IDC_BUTTON_DELETE_ALL_GROUP)->EnableWindow(TRUE);
         setStudentActions(TRUE);
