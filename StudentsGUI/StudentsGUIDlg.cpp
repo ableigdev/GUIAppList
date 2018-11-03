@@ -203,7 +203,6 @@ void CStudentsGUIDlg::deleteStudentList()
     deleteStudentInformationList();
     m_ListStudents.ResetContent();
     CorrectListHScrlPart(m_ListStudents, m_MaxExtListStud);
-    GetDlgItem(IDC_BUTTON_ADD_STUDENTS)->SetFocus();
 }
 
 void CStudentsGUIDlg::deleteStudentInformationList()
