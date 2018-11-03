@@ -624,22 +624,20 @@ void CStudentsGUIDlg::OnBnClickedButtonDeleteAllStudents()
 
 void CStudentsGUIDlg::OnBnClickedButtonAddGroup()
 {
-    // TODO: Add your control notification handler code here
     NameList<Student> newGroup;
     m_InputNewName.setTitle(__TEXT("Group"));
     m_InputNewName.setName(&newGroup.getNameClassList());
 
-    deleteAllLists();
-
     if (m_InputNewName.DoModal() == TRUE)
     {
+        deleteAllLists();
         m_Faculty.pushBack(newGroup);
         setGroupActions(TRUE);
         GetDlgItem(IDC_BUTTON_DELETE_ALL_GROUP)->EnableWindow(TRUE);
         setStudentActions(TRUE);
         showGroups();
     }
-
+    
     SetFocus();
 }
 
