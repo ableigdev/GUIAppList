@@ -97,6 +97,11 @@ void InputStudentInformation::setActiveSurname()
     ((CEdit*)(wnd))->SetSel(0, static_cast<int>(m_Student->getSurname().size()));
 }
 
+void InputStudentInformation::setCurrentBranchIndex(int index)
+{
+    m_CurrentGroupIndex = index;
+}
+
 bool InputStudentInformation::checkConstruction()
 {
     return m_Student->getSurname().size() > 0 && m_Student->getName().size();
@@ -162,7 +167,7 @@ BOOL InputStudentInformation::OnInitDialog()
             m_Faculty->operator++();
         }
         m_Faculty->setCurrentNodeOnTheBegin();
-        m_ComboGroupList.SetCurSel(0);
+        m_ComboGroupList.SetCurSel(m_CurrentGroupIndex != LB_ERR ? m_CurrentGroupIndex : 0);
     }
     
     return FALSE;
@@ -177,7 +182,6 @@ void InputStudentInformation::OnBnClickedStudentButtonNext()
     }
 }
 
-
 void InputStudentInformation::OnBnClickedOk()
 {
     if (UpdateData() == TRUE && addStudent())
@@ -185,7 +189,6 @@ void InputStudentInformation::OnBnClickedOk()
         EndDialog(IDOK);
     }
 }
-
 
 void InputStudentInformation::OnBnClickedCancel()
 {

@@ -19,6 +19,7 @@ public:
 #endif
 
     void setChangeFlag(int flag);
+    void setCurrentBranchIndex(int index);
     void setStudent(Student* student);
     void setGroup(NameList<Student>* group);
     void setFaculty(NameList<NameList<Student>>* faculty);
@@ -39,6 +40,7 @@ private:
     Student m_WorkStudent;
     int m_ChangeFlag;
     bool m_IsModify;
+    int m_CurrentGroupIndex;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support

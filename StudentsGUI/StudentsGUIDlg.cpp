@@ -523,9 +523,9 @@ void CStudentsGUIDlg::OnBnClickedButtonFacultyDelete()
 
 void CStudentsGUIDlg::OnBnClickedButtonAddStudents()
 {
-    // TODO: Add your control notification handler code here
     m_InputStudInform.setFaculty(&m_Faculty);
     m_InputStudInform.setChangeFlag(ADD);
+    m_InputStudInform.setCurrentBranchIndex(getGroupSelect());
     m_InputStudInform.DoModal();
     GetDlgItem(IDC_BUTTON_DELETE_ALL_STUDENTS)->EnableWindow(TRUE);
     showStudent();
