@@ -526,7 +526,6 @@ void CStudentsGUIDlg::OnBnClickedButtonAddStudents()
     m_InputStudInform.setChangeFlag(ADD);
     m_InputStudInform.setCurrentBranchIndex(getGroupSelect());
     m_InputStudInform.DoModal();
-    GetDlgItem(IDC_BUTTON_DELETE_ALL_STUDENTS)->EnableWindow(TRUE);
     showStudent();
 }
 
@@ -611,7 +610,8 @@ void CStudentsGUIDlg::OnBnClickedButtonDeleteAllStudents()
         m_CurrentGroup = &m_Faculty.getReferencesCurrentData();
         m_CurrentGroup->deleteAllElements();
         deleteStudentList();
-        setSelectedActions(FALSE);
+        setSelectedActions(TRUE);
+        GetDlgItem(IDC_BUTTON_DELETE_ALL_STUDENTS)->EnableWindow(FALSE);
         m_StudentName = __TEXT("");
         UpdateData(FALSE);
     }
@@ -733,6 +733,14 @@ void CStudentsGUIDlg::OnLbnSelchangeListGroups()
 
         showStudent();
         setSelectedActions(TRUE);
+        if (m_Faculty.getReferencesCurrentData().isEmpty())
+        {
+            GetDlgItem(IDC_BUTTON_DELETE_ALL_STUDENTS)->EnableWindow(FALSE);
+        }
+        else
+        {
+            GetDlgItem(IDC_BUTTON_DELETE_ALL_STUDENTS)->EnableWindow(TRUE);
+        }
     }
 }
 
