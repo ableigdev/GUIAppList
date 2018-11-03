@@ -533,6 +533,7 @@ void CStudentsGUIDlg::OnBnClickedButtonDelete()
 {
     int selectedStudent = getStudentSelect();
     int selectedGroup = getGroupSelect();
+    setSelectedActions(FALSE);
 
     if (selectedGroup != LB_ERR && selectedStudent != LB_ERR)
     {
@@ -595,6 +596,7 @@ void CStudentsGUIDlg::deleteSelectedGroup()
     }
     else
     {
+        GetDlgItem(IDC_BUTTON_DELETE_ALL_GROUP)->EnableWindow(FALSE);
         deleteGroupList();
         deleteStudentList();
         setStudentActions(FALSE);
