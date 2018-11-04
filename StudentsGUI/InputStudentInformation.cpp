@@ -160,14 +160,16 @@ BOOL InputStudentInformation::OnInitDialog()
 
     if (m_Faculty)
     {
+        auto currentGroup = &m_Faculty->getReferencesCurrentData();
         m_Faculty->setCurrentNodeOnTheBegin();
-        for (size_t i = 0; i < m_Faculty->getSize(); ++i)
+        for (int i = 0; i < m_Faculty->getSize(); ++i)
         {
             m_ComboGroupList.AddString((LPCTSTR)m_Faculty->getReferencesCurrentData().getNameClassList().c_str());
             m_Faculty->operator++();
         }
-        m_Faculty->setCurrentNodeOnTheBegin();
+        //m_Faculty->setCurrentNodeOnTheBegin();
         m_ComboGroupList.SetCurSel(m_CurrentGroupIndex != LB_ERR ? m_CurrentGroupIndex : 0);
+        setBeginState(currentGroup);
     }
     
     return FALSE;
@@ -197,4 +199,12 @@ void InputStudentInformation::OnBnClickedCancel()
         *m_Student = m_WorkStudent;
     }
     CDialogEx::OnCancel();
+}
+
+void InputStudentInformation::setBeginState(NameList<Student>* group)
+{
+    while (&m_Faculty->getReferencesCurrentData() != group)
+    {
+        m_Faculty->operator++();
+    }
 }

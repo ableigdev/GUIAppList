@@ -30,6 +30,7 @@ private:
     void setActiveSurname();
     bool checkConstruction();
     bool addStudent();
+    void setBeginState(NameList<Student>*);
 
 private:
     CComboBox m_ComboGroupList;
