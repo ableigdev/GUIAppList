@@ -94,23 +94,23 @@ bool NameList<NODETYPE>::operator!=(const NameList<NODETYPE>& rList) const
 template <typename NODETYPE>
 bool NameList<NODETYPE>::operator>=(const NameList<NODETYPE>& rList) const
 {
-    return m_NameList.compare(rList.m_NameList) >= -1;
+    return m_NameList.compare(rList.m_NameList) >= 0;
 }
 
 template <typename NODETYPE>
 bool NameList<NODETYPE>::operator<=(const NameList<NODETYPE>& rList) const
 {
-    return m_NameList.compare(rList.m_NameList) <= 1;
+    return m_NameList.compare(rList.m_NameList) <= 0;
 }
 
 template <typename NODETYPE>
 bool NameList<NODETYPE>::operator>(const NameList<NODETYPE>& rList) const
 {
-    return m_NameList.compare(rList.m_NameList) == 1;
+    return m_NameList.compare(rList.m_NameList) > 0;
 }
 
 template <typename NODETYPE>
 bool NameList<NODETYPE>::operator<(const NameList<NODETYPE>& rList) const
 {
-    return m_NameList.compare(rList.m_NameList) == -1;
+    return m_NameList.compare(rList.m_NameList) < 0;
 }

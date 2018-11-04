@@ -114,22 +114,22 @@ bool Student::operator!=(const Student& right) const
 
 bool Student::operator>=(const Student& right) const
 {
-    return compareStudents(right) != -1;
+    return compareStudents(right) >= 0;
 }
 
 bool Student::operator<=(const Student& right) const
 {
-    return compareStudents(right) != 1;
+    return compareStudents(right) <= 0;
 }
 
 bool Student::operator>(const Student& right) const
 {
-    return compareStudents(right) == 1;
+    return compareStudents(right) > 0;
 }
 
 bool Student::operator<(const Student& right) const
 {
-    return compareStudents(right) == -1;
+    return compareStudents(right) < 0;
 }
 
 listStream& operator<<(listStream& output, const Student& right)
