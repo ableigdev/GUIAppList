@@ -370,7 +370,8 @@ NODETYPE List<NODETYPE>::getValueCurrentData() const
 template <typename NODETYPE>
 void List<NODETYPE>::sort()
 {
-    if (!m_Sorted)
+    // TODO: Restore this condition
+    //if (!m_Sorted)
     {
         mergeSort(firstPtr, m_Size);
     }
