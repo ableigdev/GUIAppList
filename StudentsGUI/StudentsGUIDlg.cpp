@@ -733,6 +733,7 @@ void CStudentsGUIDlg::OnLbnSelchangeListGroups()
         for (; selected < m_OldGroupSelect; --m_OldGroupSelect, --m_Faculty);
         for (; selected > m_OldGroupSelect; ++m_OldGroupSelect, ++m_Faculty);
 
+        m_CurrentGroup = &m_Faculty.getReferencesCurrentData();
         showStudent();
         setSelectedActions(TRUE);
         if (m_Faculty.getReferencesCurrentData().isEmpty())
@@ -820,11 +821,15 @@ void CStudentsGUIDlg::changeSelectedGroup()
     m_InputNewName.setTitle(__TEXT("Group"));
     m_InputNewName.setName(&m_CurrentGroup->getNameClassList());
     m_InputNewName.DoModal();
+    m_Faculty.sort();
 }
 
 void CStudentsGUIDlg::changeSelectedStudent()
 {
+    m_InputStudInform.setFaculty(&m_Faculty);
+    m_InputStudInform.setCurrentBranchIndex(getGroupSelect());
     m_InputStudInform.setStudent(m_Student);
     m_InputStudInform.setChangeFlag(CHANGE);
     m_InputStudInform.DoModal();
+    m_CurrentGroup->sort();
 }
