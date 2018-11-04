@@ -636,9 +636,8 @@ void CStudentsGUIDlg::OnBnClickedButtonAddGroup()
         setGroupActions(TRUE);
         GetDlgItem(IDC_BUTTON_DELETE_ALL_GROUP)->EnableWindow(TRUE);
         setStudentActions(TRUE);
-        showGroups();
     }
-    
+    showGroups();
     SetFocus();
 }
 
