@@ -24,6 +24,8 @@ public:
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV support
 
+private:
+    std::basic_string<TYPESTRING> getStudentString(Student& student);
 
 private:
     InputNewName m_InputNewName;

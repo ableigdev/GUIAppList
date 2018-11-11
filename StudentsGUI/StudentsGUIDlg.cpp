@@ -289,9 +289,7 @@ void CStudentsGUIDlg::disableFaculty()
 
 void CStudentsGUIDlg::showString(Student& student)
 {
-    std::basic_string<TYPESTRING> str(student.getSurname());
-    str.append(__TEXT(" ")).append(student.getName().substr(0, 1)).append(__TEXT(". ")).append(student.getLastname().substr(0, 1)).append(__TEXT("."));
-    CorrectListHScrlPart(m_ListStudents, m_MaxExtListStud, m_ListStudents.AddString((LPCTSTR)str.c_str()));
+    CorrectListHScrlPart(m_ListStudents, m_MaxExtListStud, m_ListStudents.AddString((LPCTSTR)getStudentString(student).c_str()));
 }
 
 void CStudentsGUIDlg::showStudent()
@@ -498,8 +496,6 @@ void CStudentsGUIDlg::OnBnClickedButtonFacultyAdd()
         setFacultyActions(TRUE);
         setGroupActions(TRUE);
     }
-
-    SetFocus();
 }
 
 void CStudentsGUIDlg::OnBnClickedButtonFacultyChange()
@@ -509,7 +505,7 @@ void CStudentsGUIDlg::OnBnClickedButtonFacultyChange()
 
 void CStudentsGUIDlg::OnBnClickedButtonFacultyGet()
 {
-    MessageBox(m_Faculty.getNameClassList().c_str(), __TEXT("Faculty name"));
+    MessageBox(m_Faculty.getNameClassList().c_str(), __TEXT("Faculty name"), MB_ICONINFORMATION);
 }
 
 void CStudentsGUIDlg::OnBnClickedButtonFacultyDelete()
@@ -522,11 +518,18 @@ void CStudentsGUIDlg::OnBnClickedButtonFacultyDelete()
 
 void CStudentsGUIDlg::OnBnClickedButtonAddStudents()
 {
+    auto firstSelect = getGroupSelect();
     m_InputStudInform.setFaculty(&m_Faculty);
     m_InputStudInform.setChangeFlag(ADD);
-    m_InputStudInform.setCurrentBranchIndex(getGroupSelect());
+    m_InputStudInform.setCurrentBranchIndex(firstSelect);
     m_InputStudInform.DoModal();
-    showStudent();
+    auto selected = m_InputStudInform.getCurrentSelectedGroup();
+    if (firstSelect != selected)
+    {
+        showGroups();
+    }
+    m_ListGroups.SetCurSel(selected != LB_ERR ? selected : 0);
+    OnLbnSelchangeListGroups();
 }
 
 void CStudentsGUIDlg::OnBnClickedButtonDelete()
@@ -588,6 +591,7 @@ void CStudentsGUIDlg::deleteSelectedStudent()
 
 void CStudentsGUIDlg::deleteSelectedGroup()
 {
+    GetDlgItem(IDC_BUTTON_DELETE_ALL_STUDENTS)->EnableWindow(FALSE);
     m_Faculty.deleteElement(*m_CurrentGroup);
     if (!m_Faculty.isEmpty())
     {
@@ -607,20 +611,13 @@ void CStudentsGUIDlg::deleteSelectedGroup()
 
 void CStudentsGUIDlg::OnBnClickedButtonDeleteAllStudents()
 {
-    if (getGroupSelect() != LB_ERR)
-    {
-        m_CurrentGroup = &m_Faculty.getReferencesCurrentData();
-        m_CurrentGroup->deleteAllElements();
-        deleteStudentList();
-        setSelectedActions(TRUE);
-        GetDlgItem(IDC_BUTTON_DELETE_ALL_STUDENTS)->EnableWindow(FALSE);
-        m_StudentName = __TEXT("");
-        UpdateData(FALSE);
-    }
-    else
-    {
-        MessageBox(__TEXT("The group was not chosen!"), __TEXT("Error"), MB_OK | MB_ICONSTOP);
-    }
+    m_CurrentGroup = &m_Faculty.getReferencesCurrentData();
+    m_CurrentGroup->deleteAllElements();
+    deleteStudentList();
+    setSelectedActions(TRUE);
+    GetDlgItem(IDC_BUTTON_DELETE_ALL_STUDENTS)->EnableWindow(FALSE);
+    m_StudentName = __TEXT("");
+    UpdateData(FALSE);
 }
 
 void CStudentsGUIDlg::OnBnClickedButtonAddGroup()
@@ -638,7 +635,6 @@ void CStudentsGUIDlg::OnBnClickedButtonAddGroup()
         setStudentActions(TRUE);
     }
     showGroups();
-    SetFocus();
 }
 
 void CStudentsGUIDlg::OnBnClickedButtonDeleteAllGroup()
@@ -788,13 +784,10 @@ void CStudentsGUIDlg::OnBnClickedButtonChange()
             if (m_SelectAction.getAnswer() == GROUP_ANSWER)
             {
                 changeSelectedGroup();
-                showGroups();
-                showStudent();
             }
             else
             {
                 changeSelectedStudent();
-                showStudent();
             }
             return;
         }
@@ -803,15 +796,12 @@ void CStudentsGUIDlg::OnBnClickedButtonChange()
     if (selectedGroup != LB_ERR && selectedStudent == LB_ERR)
     {
         changeSelectedGroup();
-        showGroups();
-        showStudent();
         return;
     }
 
     if (selectedGroup == LB_ERR && selectedStudent != LB_ERR)
     {
         changeSelectedStudent();
-        showStudent();
     }
 }
 
@@ -819,8 +809,16 @@ void CStudentsGUIDlg::changeSelectedGroup()
 {
     m_InputNewName.setTitle(__TEXT("Group"));
     m_InputNewName.setName(&m_CurrentGroup->getNameClassList());
-    m_InputNewName.DoModal();
-    m_Faculty.sort();
+    if (m_InputNewName.DoModal() == TRUE)
+    {
+        m_Faculty.sort();
+        auto select = changeItem(m_ListGroups, m_MaxExtListGroup, m_CurrentGroup->getNameClassList());
+        auto selectStudent = changeItem(m_ListStudents, m_MaxExtListStud, getStudentString(*m_Student));
+        showGroups();
+        m_ListGroups.SetCurSel(select);
+        OnLbnSelchangeListGroups();
+        m_ListStudents.SetCurSel(selectStudent);
+    }
 }
 
 void CStudentsGUIDlg::changeSelectedStudent()
@@ -829,6 +827,18 @@ void CStudentsGUIDlg::changeSelectedStudent()
     m_InputStudInform.setCurrentBranchIndex(getGroupSelect());
     m_InputStudInform.setStudent(m_Student);
     m_InputStudInform.setChangeFlag(CHANGE);
-    m_InputStudInform.DoModal();
-    m_CurrentGroup->sort();
+    if (m_InputStudInform.DoModal() == TRUE)
+    {
+        m_CurrentGroup->sort();
+        auto select = changeItem(m_ListStudents, m_MaxExtListStud, getStudentString(*m_Student));
+        showStudent();
+        m_ListStudents.SetCurSel(select);
+        OnLbnSelchangeListStudents();
+    }
+}
+
+std::basic_string<TYPESTRING> CStudentsGUIDlg::getStudentString(Student& student)
+{
+    std::basic_string<TYPESTRING> str(student.getSurname());
+    return str.append(__TEXT(" ")).append(student.getName().substr(0, 1)).append(__TEXT(". ")).append(student.getLastname().substr(0, 1)).append(__TEXT("."));
 }
