@@ -25,6 +25,7 @@ public:
     void setFaculty(NameList<NameList<Student>>* faculty);
     void setListBoxGroupList(CListBox*);
     CListBox* getListBoxGroupList() const;
+    int getCurrentSelectedGroup() const;
 
 private:
     void setActiveSurname();

@@ -102,6 +102,11 @@ void InputStudentInformation::setCurrentBranchIndex(int index)
     m_CurrentGroupIndex = index;
 }
 
+int InputStudentInformation::getCurrentSelectedGroup() const
+{
+    return m_CurrentGroupIndex;
+}
+
 bool InputStudentInformation::checkConstruction()
 {
     return m_Student->getSurname().size() > 0 && m_Student->getName().size();
@@ -111,7 +116,7 @@ bool InputStudentInformation::addStudent()
 {
     UpdateData(FALSE);
 
-    auto currentSelect = m_ComboGroupList.GetCurSel();
+    m_CurrentGroupIndex = m_ComboGroupList.GetCurSel();
 
     if (checkConstruction())
     {
@@ -120,7 +125,7 @@ bool InputStudentInformation::addStudent()
             m_Faculty->setCurrentNodeOnTheBegin();
             for (size_t i = 0; i < m_Faculty->getSize(); ++i)
             {
-                if (i == currentSelect)
+                if (i == m_CurrentGroupIndex)
                 {
                     m_Faculty->getReferencesCurrentData().pushInSortList(*m_Student);
                     break;
@@ -142,6 +147,7 @@ BOOL InputStudentInformation::OnInitDialog()
     {
         m_Student = &m_WorkStudent;
         m_IsModify = true;
+        SetDefID(IDC_STUDENT_BUTTON_NEXT);
     }
 
     CDialogEx::OnInitDialog();
