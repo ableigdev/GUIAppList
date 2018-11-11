@@ -494,7 +494,6 @@ void CStudentsGUIDlg::OnBnClickedButtonFacultyAdd()
     if (m_InputNewName.DoModal() == TRUE)
     {
         setFacultyActions(TRUE);
-        setGroupActions(TRUE);
     }
 }
 
@@ -530,47 +529,12 @@ void CStudentsGUIDlg::OnBnClickedButtonAddStudents()
     }
     m_ListGroups.SetCurSel(selected != LB_ERR ? selected : 0);
     OnLbnSelchangeListGroups();
+    
 }
 
 void CStudentsGUIDlg::OnBnClickedButtonDelete()
 {
-    int selectedStudent = getStudentSelect();
-    int selectedGroup = getGroupSelect();
-    setSelectedActions(FALSE);
-
-    if (selectedGroup != LB_ERR && selectedStudent != LB_ERR)
-    {
-        m_SelectAction.setActionName(__TEXT("delete"));
-        if (m_SelectAction.DoModal() == TRUE)
-        {
-            if (m_SelectAction.getAnswer() == GROUP_ANSWER)
-            {
-                deleteSelectedGroup();
-                showGroups();
-                showStudent();
-            }
-            else
-            {
-                deleteSelectedStudent();
-                showStudent();
-            }
-            return;
-        }
-    }
-
-    if (selectedGroup != LB_ERR && selectedStudent == LB_ERR)
-    {
-        deleteSelectedGroup();
-        showGroups();
-        showStudent();
-        return;
-    }
-
-    if (selectedGroup == LB_ERR && selectedStudent != LB_ERR)
-    {
-        deleteSelectedStudent();
-        showStudent();
-    }
+    doAction(std::bind(&CStudentsGUIDlg::deleteSelectedGroup, this), std::bind(&CStudentsGUIDlg::deleteSelectedStudent, this), __TEXT("delete"));
 }
 
 void CStudentsGUIDlg::deleteSelectedStudent()
@@ -586,7 +550,9 @@ void CStudentsGUIDlg::deleteSelectedStudent()
         deleteStudentList();
         setSelectedActions(FALSE);
         m_Student = NULL;
+        GetDlgItem(IDC_BUTTON_DELETE_ALL_STUDENTS)->EnableWindow(FALSE);
     }
+    showStudent();
 }
 
 void CStudentsGUIDlg::deleteSelectedGroup()
@@ -607,6 +573,8 @@ void CStudentsGUIDlg::deleteSelectedGroup()
         setSelectedActions(FALSE);
         m_CurrentGroup = NULL;
     }
+    showGroups();
+    showStudent();
 }
 
 void CStudentsGUIDlg::OnBnClickedButtonDeleteAllStudents()
@@ -773,36 +741,7 @@ void CStudentsGUIDlg::deleteGroupList()
 
 void CStudentsGUIDlg::OnBnClickedButtonChange()
 {
-    int selectedStudent = getStudentSelect();
-    int selectedGroup = getGroupSelect();
-
-    if (selectedGroup != LB_ERR && selectedStudent != LB_ERR)
-    {
-        m_SelectAction.setActionName(__TEXT("change"));
-        if (m_SelectAction.DoModal() == TRUE)
-        {
-            if (m_SelectAction.getAnswer() == GROUP_ANSWER)
-            {
-                changeSelectedGroup();
-            }
-            else
-            {
-                changeSelectedStudent();
-            }
-            return;
-        }
-    }
-
-    if (selectedGroup != LB_ERR && selectedStudent == LB_ERR)
-    {
-        changeSelectedGroup();
-        return;
-    }
-
-    if (selectedGroup == LB_ERR && selectedStudent != LB_ERR)
-    {
-        changeSelectedStudent();
-    }
+    doAction(std::bind(&CStudentsGUIDlg::changeSelectedGroup, this), std::bind(&CStudentsGUIDlg::changeSelectedStudent, this), __TEXT("change"));
 }
 
 void CStudentsGUIDlg::changeSelectedGroup()
@@ -841,4 +780,39 @@ std::basic_string<TYPESTRING> CStudentsGUIDlg::getStudentString(Student& student
 {
     std::basic_string<TYPESTRING> str(student.getSurname());
     return str.append(__TEXT(" ")).append(student.getName().substr(0, 1)).append(__TEXT(". ")).append(student.getLastname().substr(0, 1)).append(__TEXT("."));
+}
+
+void CStudentsGUIDlg::doAction(std::function<void()> groupAction, std::function<void()> studentAction, CString actionName)
+{
+    int selectedStudent = getStudentSelect();
+    int selectedGroup = getGroupSelect();
+    setSelectedActions(FALSE);
+
+    if (selectedGroup != LB_ERR && selectedStudent != LB_ERR)
+    {
+        m_SelectAction.setActionName(actionName);
+        if (m_SelectAction.DoModal() == TRUE)
+        {
+            if (m_SelectAction.getAnswer() == GROUP_ANSWER)
+            {
+                groupAction();
+            }
+            else
+            {
+                studentAction();
+            }
+            return;
+        }
+    }
+
+    if (selectedGroup != LB_ERR && selectedStudent == LB_ERR)
+    {
+        groupAction();
+        return;
+    }
+
+    if (selectedGroup == LB_ERR && selectedStudent != LB_ERR)
+    {
+        studentAction();
+    }
 }

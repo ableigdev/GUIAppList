@@ -8,6 +8,7 @@
 #include "Student.h"
 #include "NameList.h"
 #include "SelectAction.h"
+#include <functional>
 
 // CStudentsGUIDlg dialog
 class CStudentsGUIDlg : public CDialogEx
@@ -26,6 +27,7 @@ public:
 
 private:
     std::basic_string<TYPESTRING> getStudentString(Student& student);
+    void doAction(std::function<void()> groupAcion, std::function<void()> studentAction, CString actionName);
 
 private:
     InputNewName m_InputNewName;
