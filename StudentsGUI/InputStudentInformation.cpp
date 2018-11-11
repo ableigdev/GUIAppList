@@ -148,6 +148,7 @@ BOOL InputStudentInformation::OnInitDialog()
         m_Student = &m_WorkStudent;
         m_IsModify = true;
         SetDefID(IDC_STUDENT_BUTTON_NEXT);
+        SetWindowText(__TEXT("Input Student Information"));
     }
 
     CDialogEx::OnInitDialog();
@@ -160,6 +161,7 @@ BOOL InputStudentInformation::OnInitDialog()
         GetDlgItem(IDC_COMBO_GROUPS)->EnableWindow(FALSE);
         SetDefID(IDOK);
         UpdateData(FALSE);
+        SetWindowText(__TEXT("Change Student Information"));
     }
 
     setActiveSurname();
