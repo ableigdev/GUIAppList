@@ -523,13 +523,13 @@ void CStudentsGUIDlg::OnBnClickedButtonAddStudents()
     m_InputStudInform.setCurrentBranchIndex(firstSelect);
     m_InputStudInform.DoModal();
     auto selected = m_InputStudInform.getCurrentSelectedGroup();
-    if (firstSelect != selected)
-    {
-        showGroups();
-    }
-    m_ListGroups.SetCurSel(selected != LB_ERR ? selected : 0);
-    OnLbnSelchangeListGroups();
+    showGroups();
     
+    if (selected != LB_ERR)
+    {
+        m_ListGroups.SetCurSel(selected);
+        OnLbnSelchangeListGroups();
+    }
 }
 
 void CStudentsGUIDlg::OnBnClickedButtonDelete()
@@ -557,6 +557,7 @@ void CStudentsGUIDlg::deleteSelectedStudent()
 
 void CStudentsGUIDlg::deleteSelectedGroup()
 {
+    setSelectedActions(FALSE);
     GetDlgItem(IDC_BUTTON_DELETE_ALL_STUDENTS)->EnableWindow(FALSE);
     m_Faculty.deleteElement(*m_CurrentGroup);
     if (!m_Faculty.isEmpty())
@@ -752,11 +753,14 @@ void CStudentsGUIDlg::changeSelectedGroup()
     {
         m_Faculty.sort();
         auto select = changeItem(m_ListGroups, m_MaxExtListGroup, m_CurrentGroup->getNameClassList());
-        auto selectStudent = changeItem(m_ListStudents, m_MaxExtListStud, getStudentString(*m_Student));
+        auto selectStudent = m_Student != NULL && m_CurrentGroup->findValue(*m_Student) ? changeItem(m_ListStudents, m_MaxExtListStud, getStudentString(*m_Student)) : LB_ERR;
         showGroups();
         m_ListGroups.SetCurSel(select);
         OnLbnSelchangeListGroups();
-        m_ListStudents.SetCurSel(selectStudent);
+        if (selectStudent != LB_ERR)
+        {
+            m_ListStudents.SetCurSel(selectStudent);
+        }
     }
 }
 
@@ -779,14 +783,18 @@ void CStudentsGUIDlg::changeSelectedStudent()
 std::basic_string<TYPESTRING> CStudentsGUIDlg::getStudentString(Student& student)
 {
     std::basic_string<TYPESTRING> str(student.getSurname());
-    return str.append(__TEXT(" ")).append(student.getName().substr(0, 1)).append(__TEXT(". ")).append(student.getLastname().substr(0, 1)).append(__TEXT("."));
+    str.append(__TEXT(" ")).append(student.getName().substr(0, 1)).append(__TEXT(". "));
+    if (!student.getLastname().empty())
+    {
+        str.append(student.getLastname().substr(0, 1)).append(__TEXT("."));
+    }
+    return str;
 }
 
 void CStudentsGUIDlg::doAction(std::function<void()> groupAction, std::function<void()> studentAction, CString actionName)
 {
     int selectedStudent = getStudentSelect();
     int selectedGroup = getGroupSelect();
-    setSelectedActions(FALSE);
 
     if (selectedGroup != LB_ERR && selectedStudent != LB_ERR)
     {

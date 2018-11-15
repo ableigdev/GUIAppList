@@ -30,6 +30,7 @@ InputNewName::~InputNewName()
 void InputNewName::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+    *m_CStringName = m_Name->c_str();
     DDX_Text(pDX, IDC_EDIT_ENTER_NAME, *m_CStringName);
 }
 

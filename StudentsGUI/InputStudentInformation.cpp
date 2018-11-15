@@ -6,6 +6,7 @@
 #include "InputStudentInformation.h"
 #include "afxdialogex.h"
 #include "constants.h"
+#include <algorithm>
 
 
 // InputStudentInformation dialog
@@ -109,7 +110,11 @@ int InputStudentInformation::getCurrentSelectedGroup() const
 
 bool InputStudentInformation::checkConstruction()
 {
-    return m_Student->getSurname().size() > 0 && m_Student->getName().size();
+    auto surname = m_Student->getSurname();
+    auto name = m_Student->getName();
+    surname.erase(std::remove(surname.begin(), surname.end(), __TEXT(' ')), surname.end());
+    name.erase(std::remove(name.begin(), name.end(), __TEXT(' ')), name.end());
+    return !surname.empty() && !name.empty();
 }
 
 bool InputStudentInformation::addStudent()
