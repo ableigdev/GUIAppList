@@ -794,7 +794,7 @@ std::basic_string<TYPESTRING> CStudentsGUIDlg::getStudentString(Student& student
     str.append(__TEXT(" ")).append(student.getName().substr(0, 1)).append(__TEXT(". "));
     if (!lastName.empty())
     {
-        str.append(student.getLastname().substr(0, 1)).append(__TEXT("."));
+        str.append(lastName.substr(0, 1)).append(__TEXT("."));
     }
     return str;
 }
