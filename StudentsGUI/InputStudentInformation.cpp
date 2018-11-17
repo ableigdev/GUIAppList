@@ -114,6 +114,8 @@ bool InputStudentInformation::checkConstruction()
     auto name = m_Student->getName();
     surname.erase(std::remove(surname.begin(), surname.end(), __TEXT(' ')), surname.end());
     name.erase(std::remove(name.begin(), name.end(), __TEXT(' ')), name.end());
+    m_Student->setSurname(surname);
+    m_Student->setName(name);
     return !surname.empty() && !name.empty();
 }
 
