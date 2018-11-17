@@ -7,6 +7,7 @@
 #include "StudentsGUIDlg.h"
 #include "afxdialogex.h"
 #include "constants.h"
+#include <algorithm>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -126,11 +127,6 @@ BOOL CStudentsGUIDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 
 	// TODO: Add extra initialization here
-    CWnd* wnd = GetDlgItem(IDC_BUTTON_FACULTY_ADD);
-    if (wnd != NULL)
-    {
-        wnd->SetFocus();
-    }
 
     m_InputStudInform.setListBoxGroupList(&m_ListGroups);
     m_Student = NULL;
@@ -332,9 +328,12 @@ int CStudentsGUIDlg::setNewSelect(CListBox& listBox, int& maxExtCx)
 int CStudentsGUIDlg::changeItem(CListBox& listBox, int& maxExtCx, const std::basic_string<TYPESTRING>& name)
 {
     int currentSelect = listBox.GetCurSel();
-    CorrectListHScrlDel(listBox, maxExtCx, currentSelect);
-    listBox.SetCurSel(currentSelect = listBox.AddString(name.c_str()));
-    CorrectListHScrlPart(listBox, maxExtCx, currentSelect);
+    if (currentSelect != LB_ERR)
+    {
+        CorrectListHScrlDel(listBox, maxExtCx, currentSelect);
+        listBox.SetCurSel(currentSelect = listBox.AddString(name.c_str()));
+        CorrectListHScrlPart(listBox, maxExtCx, currentSelect);
+    }
     return currentSelect;
 }
 
@@ -499,6 +498,7 @@ void CStudentsGUIDlg::OnBnClickedButtonFacultyAdd()
 
 void CStudentsGUIDlg::OnBnClickedButtonFacultyChange()
 {
+    m_InputNewName.setName(&m_Faculty.getNameClassList());
     m_InputNewName.DoModal();
 }
 
@@ -600,8 +600,10 @@ void CStudentsGUIDlg::OnBnClickedButtonAddGroup()
         deleteAllLists();
         m_Faculty.pushInSortList(newGroup);
         setGroupActions(TRUE);
-        GetDlgItem(IDC_BUTTON_DELETE_ALL_GROUP)->EnableWindow(TRUE);
         setStudentActions(TRUE);
+        setSelectedActions(FALSE);
+        GetDlgItem(IDC_BUTTON_DELETE_ALL_STUDENTS)->EnableWindow(FALSE);
+        GetDlgItem(IDC_BUTTON_DELETE_ALL_GROUP)->EnableWindow(TRUE);
     }
     showGroups();
 }
@@ -659,6 +661,8 @@ void CStudentsGUIDlg::OnLbnSelchangeListStudents()
         showStudentInformation(*m_Student);
         setSelectedActions(TRUE);
     }
+    GetDlgItem(IDC_BUTTON_CHANGE)->SetFocus();
+    SetDefID(IDC_BUTTON_CHANGE);
 }
 
 void CStudentsGUIDlg::OnEnChangeEditGroup()
@@ -709,6 +713,8 @@ void CStudentsGUIDlg::OnLbnSelchangeListGroups()
             GetDlgItem(IDC_BUTTON_DELETE_ALL_STUDENTS)->EnableWindow(TRUE);
         }
     }
+    GetDlgItem(IDC_BUTTON_CHANGE)->SetFocus();
+    SetDefID(IDC_BUTTON_CHANGE);
 }
 
 void CStudentsGUIDlg::showGroups()
@@ -782,9 +788,11 @@ void CStudentsGUIDlg::changeSelectedStudent()
 
 std::basic_string<TYPESTRING> CStudentsGUIDlg::getStudentString(Student& student)
 {
-    std::basic_string<TYPESTRING> str(student.getSurname());
+    auto str(student.getSurname());
+    auto lastName(student.getLastname());
+    lastName.erase(std::remove(lastName.begin(), lastName.end(), __TEXT(' ')), lastName.end());
     str.append(__TEXT(" ")).append(student.getName().substr(0, 1)).append(__TEXT(". "));
-    if (!student.getLastname().empty())
+    if (!lastName.empty())
     {
         str.append(student.getLastname().substr(0, 1)).append(__TEXT("."));
     }
