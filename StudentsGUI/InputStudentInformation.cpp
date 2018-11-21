@@ -35,12 +35,18 @@ void InputStudentInformation::DoDataExchange(CDataExchange* pDX)
 
     DDX_Control(pDX, IDC_COMBO_GROUPS, m_ComboGroupList);
     DDX_Text(pDX, IDC_STUDENT_EDIT_SURNAME, surname);
+    surname.TrimLeft();
+    surname.TrimRight();
     m_Student->setSurname(surname.GetString());
 
     DDX_Text(pDX, IDC_STUDENT_EDIT_NAME, name);
+    name.TrimLeft();
+    name.TrimRight();
     m_Student->setName(name.GetString());
 
     DDX_Text(pDX, IDC_STUDENT_EDIT_LASTNAME, lastname);
+    lastname.TrimLeft();
+    lastname.TrimRight();
     m_Student->setLastname(lastname.GetString());
 
     DDX_Text(pDX, IDC_STUDENT_EDIT_BIRTH_YEAR, year);
@@ -110,13 +116,7 @@ int InputStudentInformation::getCurrentSelectedGroup() const
 
 bool InputStudentInformation::checkConstruction()
 {
-    auto surname = m_Student->getSurname();
-    auto name = m_Student->getName();
-    surname.erase(std::remove(surname.begin(), surname.end(), __TEXT(' ')), surname.end());
-    name.erase(std::remove(name.begin(), name.end(), __TEXT(' ')), name.end());
-    m_Student->setSurname(surname);
-    m_Student->setName(name);
-    return !surname.empty() && !name.empty();
+    return !m_Student->getSurname().empty() && !m_Student->getName().empty();
 }
 
 bool InputStudentInformation::addStudent()
@@ -130,19 +130,13 @@ bool InputStudentInformation::addStudent()
         if (m_ChangeFlag == ADD)
         {
             m_Faculty->setCurrentNodeOnTheBegin();
-            for (size_t i = 0; i < m_Faculty->getSize(); ++i)
-            {
-                if (i == m_CurrentGroupIndex)
-                {
-                    m_Faculty->getReferencesCurrentData().pushInSortList(*m_Student);
-                    break;
-                }
-                m_Faculty->operator++();
-            }
+            for (size_t i = 0; i < m_CurrentGroupIndex; ++i, ++*m_Faculty);
+            m_Faculty->getReferencesCurrentData().pushInSortList(*m_Student);
         }
         return true;
     }
     MessageBox(__TEXT("Surname or name is empty"), __TEXT("Error"), MB_OK | MB_ICONSTOP);
+    m_Student->getSurname().empty() ? GetDlgItem(IDC_STUDENT_EDIT_SURNAME)->SetFocus() : GetDlgItem(IDC_STUDENT_EDIT_NAME)->SetFocus();
     
     m_IsModify = true;
     return false;
@@ -177,10 +171,9 @@ BOOL InputStudentInformation::OnInitDialog()
     {
         auto currentGroup = &m_Faculty->getReferencesCurrentData();
         m_Faculty->setCurrentNodeOnTheBegin();
-        for (int i = 0; i < m_Faculty->getSize(); ++i)
+        for (int i = 0; i < m_Faculty->getSize(); ++i, ++*m_Faculty)
         {
             m_ComboGroupList.AddString((LPCTSTR)m_Faculty->getReferencesCurrentData().getNameClassList().c_str());
-            m_Faculty->operator++();
         }
         //m_Faculty->setCurrentNodeOnTheBegin();
         m_ComboGroupList.SetCurSel(m_CurrentGroupIndex != LB_ERR ? m_CurrentGroupIndex : 0);
@@ -220,6 +213,6 @@ void InputStudentInformation::setBeginState(NameList<Student>* group)
 {
     while (&m_Faculty->getReferencesCurrentData() != group)
     {
-        m_Faculty->operator++();
+        ++*m_Faculty;
     }
 }
