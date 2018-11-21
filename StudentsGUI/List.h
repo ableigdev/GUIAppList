@@ -32,6 +32,7 @@ public:
 
     void sort();
     void sortCurrentNodePtr();
+    void sortCurrentPtr();
     bool bubbleSort();
 
     inline bool operator!() const;
@@ -581,4 +582,10 @@ void List<NODETYPE>::detachNode(ListNode<NODETYPE>* ptr)
 {
     ptr->prevPtr->nextPtr = ptr->nextPtr;
     ptr->nextPtr->prevPtr = ptr->prevPtr;
+}
+
+template <typename NODETYPE>
+void List<NODETYPE>::sortCurrentPtr()
+{
+    sort();
 }
