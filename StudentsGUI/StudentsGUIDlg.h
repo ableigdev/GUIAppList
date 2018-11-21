@@ -8,6 +8,7 @@
 #include "Student.h"
 #include "NameList.h"
 #include "SelectAction.h"
+#include "Iterator.h"
 #include <functional>
 
 // CStudentsGUIDlg dialog
@@ -26,8 +27,10 @@ public:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV support
 
 private:
-    std::basic_string<TYPESTRING> getStudentString(Student& student);
+    CString getStudentString(Student& student);
     void doAction(std::function<void()> groupAcion, std::function<void()> studentAction, CString actionName);
+    template <typename TypeOfList>
+    void for_each_listbox(Iterator<TypeOfList> list, CListBox& listbox, int& oldSelect, int& selected);
 
 private:
     InputNewName m_InputNewName;
@@ -78,7 +81,7 @@ protected:
     void showGroups();
     
     int setNewSelect(CListBox& listBox, int& maxExtCx);
-    int changeItem(CListBox& listBox, int& maxExtCx, const std::basic_string<TYPESTRING>& name); // TODO: Need to refactor
+    int changeItem(CListBox& listBox, int& maxExtCx, const CString& name); // TODO: Need to refactor
 
     void showString(Student& student); 
     void showString(NameList<Student>& group);

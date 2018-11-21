@@ -285,7 +285,7 @@ void CStudentsGUIDlg::disableFaculty()
 
 void CStudentsGUIDlg::showString(Student& student)
 {
-    CorrectListHScrlPart(m_ListStudents, m_MaxExtListStud, m_ListStudents.AddString((LPCTSTR)getStudentString(student).c_str()));
+    CorrectListHScrlPart(m_ListStudents, m_MaxExtListStud, m_ListStudents.AddString((LPCTSTR)getStudentString(student)));
 }
 
 void CStudentsGUIDlg::showStudent()
@@ -301,11 +301,11 @@ void CStudentsGUIDlg::showStudent()
             {
                 m_Student = &m_CurrentGroup->getReferencesCurrentData();
                 showString(*m_Student);
-                m_CurrentGroup->operator++();
+                ++*m_CurrentGroup;
             }
             m_CurrentGroup->setCurrentNodeOnTheBegin();
             m_Student = &m_CurrentGroup->getReferencesCurrentData();
-            showStudentInformation(*m_Student);
+            //showStudentInformation(*m_Student);
             m_OldStudSelect = LB_ERR;
         }
     }
@@ -325,13 +325,13 @@ int CStudentsGUIDlg::setNewSelect(CListBox& listBox, int& maxExtCx)
     return currentSelect;
 }
 
-int CStudentsGUIDlg::changeItem(CListBox& listBox, int& maxExtCx, const std::basic_string<TYPESTRING>& name)
+int CStudentsGUIDlg::changeItem(CListBox& listBox, int& maxExtCx, const CString& name)
 {
     int currentSelect = listBox.GetCurSel();
     if (currentSelect != LB_ERR)
     {
         CorrectListHScrlDel(listBox, maxExtCx, currentSelect);
-        listBox.SetCurSel(currentSelect = listBox.AddString(name.c_str()));
+        listBox.SetCurSel(currentSelect = listBox.AddString(name));
         CorrectListHScrlPart(listBox, maxExtCx, currentSelect);
     }
     return currentSelect;
@@ -362,7 +362,7 @@ void CStudentsGUIDlg::modifyStudent()
     if (m_InputStudInform.DoModal() == IDOK)
     {
         m_CurrentGroup = &m_Faculty.getReferencesCurrentData();
-        m_CurrentGroup->sortCurrentNodePtr();
+        m_CurrentGroup->sortCurrentPtr();
         m_OldStudSelect = changeItem(m_ListStudents, m_MaxExtListStud, m_Student->getSurname().c_str());
         showStudentInformation(*m_Student);
     }
@@ -594,6 +594,12 @@ void CStudentsGUIDlg::OnBnClickedButtonAddGroup()
     NameList<Student> newGroup;
     m_InputNewName.setTitle(__TEXT("Group"));
     m_InputNewName.setName(&newGroup.getNameClassList());
+    CString buf;
+    int select = getGroupSelect();
+    if (select != LB_ERR)
+    {
+        m_ListGroups.GetText(select, buf);
+    }
 
     if (m_InputNewName.DoModal() == TRUE)
     {
@@ -606,6 +612,12 @@ void CStudentsGUIDlg::OnBnClickedButtonAddGroup()
         GetDlgItem(IDC_BUTTON_DELETE_ALL_GROUP)->EnableWindow(TRUE);
     }
     showGroups();
+    if (!buf.IsEmpty())
+    {
+        int index = m_ListGroups.FindString(-1, buf);
+        m_ListGroups.SetCurSel(index);
+        OnLbnSelchangeListGroups();
+    }
 }
 
 void CStudentsGUIDlg::OnBnClickedButtonDeleteAllGroup()
@@ -637,26 +649,14 @@ void CStudentsGUIDlg::OnEnChangeEditStudent()
 
 void CStudentsGUIDlg::OnLbnSelchangeListStudents()
 {
+    // TODO: Add a common iterator
+    // Status: Done
     int selected = getStudentSelect();
 
     if (selected != LB_ERR && selected != m_OldStudSelect)
     {
-
-        if (m_OldStudSelect == LB_ERR)
-        {
-            if ((m_OldStudSelect = selected >= (m_OldStudSelect = m_ListStudents.GetCount() - 1) >> 1 ? m_OldStudSelect : 0) == 0)
-            {
-                m_CurrentGroup->setCurrentNodeOnTheBegin();
-            }
-            else
-            {
-                m_CurrentGroup->setCurrentNodeOnTheEnd();
-            }
-        }
-
-        for (; selected < m_OldStudSelect; --m_OldStudSelect, m_CurrentGroup->operator--());
-        for (; selected > m_OldStudSelect; ++m_OldStudSelect, m_CurrentGroup->operator++());
-
+        Iterator <Student> iter(m_CurrentGroup);
+        for_each_listbox(iter, m_ListStudents, m_OldStudSelect, selected);
         m_Student = &m_CurrentGroup->getReferencesCurrentData();
         showStudentInformation(*m_Student);
         setSelectedActions(TRUE);
@@ -680,38 +680,16 @@ void CStudentsGUIDlg::OnEnChangeEditGroup()
 
 void CStudentsGUIDlg::OnLbnSelchangeListGroups()
 {
-    // TODO: Add your control notification handler code here
     int selected = getGroupSelect();
 
     if (selected != LB_ERR && selected != m_OldGroupSelect)
     {
-
-        if (m_OldGroupSelect == LB_ERR)
-        {
-            if ((m_OldGroupSelect = selected >= (m_OldGroupSelect = m_ListGroups.GetCount() - 1) >> 1 ? m_OldGroupSelect : 0) == 0)
-            {
-                m_Faculty.setCurrentNodeOnTheBegin();
-            }
-            else
-            {
-                m_Faculty.setCurrentNodeOnTheEnd();
-            }
-        }
-
-        for (; selected < m_OldGroupSelect; --m_OldGroupSelect, --m_Faculty);
-        for (; selected > m_OldGroupSelect; ++m_OldGroupSelect, ++m_Faculty);
-
+        Iterator <NameList<Student>> iter(&m_Faculty);
+        for_each_listbox(iter, m_ListGroups, m_OldGroupSelect, selected);
         m_CurrentGroup = &m_Faculty.getReferencesCurrentData();
         showStudent();
         setSelectedActions(TRUE);
-        if (m_Faculty.getReferencesCurrentData().isEmpty())
-        {
-            GetDlgItem(IDC_BUTTON_DELETE_ALL_STUDENTS)->EnableWindow(FALSE);
-        }
-        else
-        {
-            GetDlgItem(IDC_BUTTON_DELETE_ALL_STUDENTS)->EnableWindow(TRUE);
-        }
+        m_Faculty.getReferencesCurrentData().isEmpty() ? GetDlgItem(IDC_BUTTON_DELETE_ALL_STUDENTS)->EnableWindow(FALSE) : GetDlgItem(IDC_BUTTON_DELETE_ALL_STUDENTS)->EnableWindow(TRUE);
     }
     GetDlgItem(IDC_BUTTON_CHANGE)->SetFocus();
     SetDefID(IDC_BUTTON_CHANGE);
@@ -757,8 +735,8 @@ void CStudentsGUIDlg::changeSelectedGroup()
     m_InputNewName.setName(&m_CurrentGroup->getNameClassList());
     if (m_InputNewName.DoModal() == TRUE)
     {
-        m_Faculty.sort();
-        auto select = changeItem(m_ListGroups, m_MaxExtListGroup, m_CurrentGroup->getNameClassList());
+        m_Faculty.sortCurrentPtr();
+        auto select = changeItem(m_ListGroups, m_MaxExtListGroup, m_CurrentGroup->getNameClassList().c_str());
         auto selectStudent = m_Student != NULL && m_CurrentGroup->findValue(*m_Student) ? changeItem(m_ListStudents, m_MaxExtListStud, getStudentString(*m_Student)) : LB_ERR;
         showGroups();
         m_ListGroups.SetCurSel(select);
@@ -778,7 +756,7 @@ void CStudentsGUIDlg::changeSelectedStudent()
     m_InputStudInform.setChangeFlag(CHANGE);
     if (m_InputStudInform.DoModal() == TRUE)
     {
-        m_CurrentGroup->sort();
+        m_CurrentGroup->sortCurrentPtr();
         auto select = changeItem(m_ListStudents, m_MaxExtListStud, getStudentString(*m_Student));
         showStudent();
         m_ListStudents.SetCurSel(select);
@@ -786,17 +764,18 @@ void CStudentsGUIDlg::changeSelectedStudent()
     }
 }
 
-std::basic_string<TYPESTRING> CStudentsGUIDlg::getStudentString(Student& student)
+CString CStudentsGUIDlg::getStudentString(Student& student)
 {
-    auto str(student.getSurname());
-    auto lastName(student.getLastname());
-    lastName.erase(std::remove(lastName.begin(), lastName.end(), __TEXT(' ')), lastName.end());
-    str.append(__TEXT(" ")).append(student.getName().substr(0, 1)).append(__TEXT(". "));
-    if (!lastName.empty())
+    CString str1(student.getSurname().c_str());
+    str1.Append(__TEXT(" "));
+    str1.Append(student.getName().substr(0, 1).c_str());
+    str1.Append(__TEXT(". "));
+    if (!student.getLastname().empty())
     {
-        str.append(lastName.substr(0, 1)).append(__TEXT("."));
+        str1.Append(student.getLastname().substr(0, 1).c_str());
+        str1.Append(__TEXT("."));
     }
-    return str;
+    return str1;
 }
 
 void CStudentsGUIDlg::doAction(std::function<void()> groupAction, std::function<void()> studentAction, CString actionName)
@@ -809,14 +788,7 @@ void CStudentsGUIDlg::doAction(std::function<void()> groupAction, std::function<
         m_SelectAction.setActionName(actionName);
         if (m_SelectAction.DoModal() == TRUE)
         {
-            if (m_SelectAction.getAnswer() == GROUP_ANSWER)
-            {
-                groupAction();
-            }
-            else
-            {
-                studentAction();
-            }
+            m_SelectAction.getAnswer() == GROUP_ANSWER ? groupAction() : studentAction();
             return;
         }
     }
@@ -831,4 +803,23 @@ void CStudentsGUIDlg::doAction(std::function<void()> groupAction, std::function<
     {
         studentAction();
     }
+}
+
+template <typename TypeOfList>
+void CStudentsGUIDlg::for_each_listbox(Iterator<TypeOfList> list, CListBox& listbox, int& oldSelect, int& selected)
+{
+    if (oldSelect == LB_ERR)
+    {
+        if ((oldSelect = selected >= (oldSelect = listbox.GetCount() - 1) >> 1 ? oldSelect : 0) == 0)
+        {
+            list.getPointer()->setCurrentNodeOnTheBegin();
+        }
+        else
+        {
+            list.getPointer()->setCurrentNodeOnTheEnd();
+        }
+    }
+
+    for (; selected < oldSelect; --oldSelect, --list);
+    for (; selected > oldSelect; ++oldSelect, ++list);
 }
