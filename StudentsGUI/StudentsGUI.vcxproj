@@ -193,6 +193,7 @@
     <ClInclude Include="ReadAccessViolation.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SelectAction.h" />
+    <ClInclude Include="ShowSubjectsAndMarks.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Student.h" />
     <ClInclude Include="StudentsGUI.h" />
@@ -206,6 +207,7 @@
     <ClCompile Include="InputStudentInformation.cpp" />
     <ClCompile Include="InputSubjects.cpp" />
     <ClCompile Include="SelectAction.cpp" />
+    <ClCompile Include="ShowSubjectsAndMarks.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
