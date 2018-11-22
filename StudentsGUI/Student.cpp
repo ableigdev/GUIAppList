@@ -71,6 +71,16 @@ float Student::getAverageGrade() const
     return m_AverageGrade;
 }
 
+void Student::setRecordBookPair(CString* nameOfTheSubject, float* valueOfTheMark)
+{
+    m_RecordBook.pushInSortList({ nameOfTheSubject, valueOfTheMark });
+}
+
+List<std::pair<CString*, float*>>& Student::getRecordBook()
+{
+    return m_RecordBook;
+}
+
 const Student& Student::operator=(const Student& right)
 {
     if (this != &right)

@@ -4,6 +4,7 @@
 #include <iostream>
 #include <tchar.h>
 #include "TypeStream.h"
+#include "List.h"
 
 class Student
 {
@@ -26,6 +27,9 @@ public:
     void setAverageGrade(float);
     float getAverageGrade() const;
 
+    void setRecordBookPair(CString* nameOfTheSubject, float* valueOfTheMark);
+    List<std::pair<CString*, float*>>& getRecordBook();
+
     const Student& operator=(const Student&);
     bool operator==(const Student&) const;
     bool operator!=(const Student&) const;
@@ -46,4 +50,5 @@ private:
     std::basic_string<TYPESTRING> m_Lastname {};
     short int m_BirthYear;
     float m_AverageGrade;
+    List<std::pair<CString*, float*>> m_RecordBook;
 };
