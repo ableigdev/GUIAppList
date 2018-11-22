@@ -181,6 +181,8 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AddSubjectsAndMarksForStudent.h" />
+    <ClInclude Include="InputSubjects.h" />
     <ClInclude Include="Iterator.h" />
     <ClInclude Include="constants.h" />
     <ClInclude Include="InputNewName.h" />
@@ -199,8 +201,10 @@
     <ClInclude Include="TypeStream.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AddSubjectsAndMarksForStudent.cpp" />
     <ClCompile Include="InputNewName.cpp" />
     <ClCompile Include="InputStudentInformation.cpp" />
+    <ClCompile Include="InputSubjects.cpp" />
     <ClCompile Include="SelectAction.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

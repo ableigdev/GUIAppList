@@ -66,6 +66,12 @@
     <ClInclude Include="Iterator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="InputSubjects.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AddSubjectsAndMarksForStudent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="StudentsGUI.cpp">
@@ -87,6 +93,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SelectAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="InputSubjects.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AddSubjectsAndMarksForStudent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
