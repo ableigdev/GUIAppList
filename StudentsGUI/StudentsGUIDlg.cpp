@@ -92,6 +92,8 @@ BEGIN_MESSAGE_MAP(CStudentsGUIDlg, CDialogEx)
     ON_EN_CHANGE(IDC_EDIT_GROUP, &CStudentsGUIDlg::OnEnChangeEditGroup)
     ON_LBN_SELCHANGE(IDC_LIST_GROUPS, &CStudentsGUIDlg::OnLbnSelchangeListGroups)
     ON_BN_CLICKED(IDC_BUTTON_CHANGE, &CStudentsGUIDlg::OnBnClickedButtonChange)
+    ON_BN_CLICKED(IDC_BUTTON_INPUT_SUBJECTS_AND_MARKS, &CStudentsGUIDlg::OnBnClickedButtonInputSubjectsAndMarks)
+    ON_BN_CLICKED(IDC_BUTTON_ADD_SUBJECTS_AND_MARKS_FOR_STUDENT, &CStudentsGUIDlg::OnBnClickedButtonAddSubjectsAndMarksForStudent)
 END_MESSAGE_MAP()
 
 
@@ -660,6 +662,11 @@ void CStudentsGUIDlg::OnLbnSelchangeListStudents()
         m_Student = &m_CurrentGroup->getReferencesCurrentData();
         showStudentInformation(*m_Student);
         setSelectedActions(TRUE);
+        if (!m_InputSubjects.getListOfSubjects().isEmpty() &&
+            !m_InputSubjects.getListOfMarks().isEmpty())
+        {
+            GetDlgItem(IDC_BUTTON_ADD_SUBJECTS_AND_MARKS_FOR_STUDENT)->EnableWindow(TRUE);
+        }
     }
     GetDlgItem(IDC_BUTTON_CHANGE)->SetFocus();
     SetDefID(IDC_BUTTON_CHANGE);
@@ -822,4 +829,18 @@ void CStudentsGUIDlg::for_each_listbox(Iterator<TypeOfList> list, CListBox& list
 
     for (; selected < oldSelect; --oldSelect, --list);
     for (; selected > oldSelect; ++oldSelect, ++list);
+}
+
+
+void CStudentsGUIDlg::OnBnClickedButtonInputSubjectsAndMarks()
+{
+    m_InputSubjects.DoModal();
+}
+
+void CStudentsGUIDlg::OnBnClickedButtonAddSubjectsAndMarksForStudent()
+{
+    m_AddSubjectsAndMarks.setMarks(&m_InputSubjects.getListOfMarks());
+    m_AddSubjectsAndMarks.setSubjects(&m_InputSubjects.getListOfSubjects());
+    m_AddSubjectsAndMarks.setStudent(m_Student);
+    m_AddSubjectsAndMarks.DoModal();
 }

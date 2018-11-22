@@ -9,6 +9,8 @@
 #include "NameList.h"
 #include "SelectAction.h"
 #include "Iterator.h"
+#include "InputSubjects.h"
+#include "AddSubjectsAndMarksForStudent.h"
 #include <functional>
 
 // CStudentsGUIDlg dialog
@@ -39,6 +41,8 @@ private:
     NameList <NameList<Student>> m_Faculty;
     Student* m_Student;
     SelectAction m_SelectAction;
+    InputSubjects m_InputSubjects;
+    AddSubjectsAndMarksForStudent m_AddSubjectsAndMarks;
 
     int m_FontAveChar;
     int m_MaxExtListStud;
@@ -117,4 +121,6 @@ public:
     afx_msg void OnEnChangeEditGroup();
     afx_msg void OnLbnSelchangeListGroups();
     afx_msg void OnBnClickedButtonChange();
+    afx_msg void OnBnClickedButtonInputSubjectsAndMarks();
+    afx_msg void OnBnClickedButtonAddSubjectsAndMarksForStudent();
 };
