@@ -94,6 +94,7 @@ BEGIN_MESSAGE_MAP(CStudentsGUIDlg, CDialogEx)
     ON_BN_CLICKED(IDC_BUTTON_CHANGE, &CStudentsGUIDlg::OnBnClickedButtonChange)
     ON_BN_CLICKED(IDC_BUTTON_INPUT_SUBJECTS_AND_MARKS, &CStudentsGUIDlg::OnBnClickedButtonInputSubjectsAndMarks)
     ON_BN_CLICKED(IDC_BUTTON_ADD_SUBJECTS_AND_MARKS_FOR_STUDENT, &CStudentsGUIDlg::OnBnClickedButtonAddSubjectsAndMarksForStudent)
+    ON_BN_CLICKED(IDC_BUTTON_GET_STUDENT_SUBJECTS, &CStudentsGUIDlg::OnBnClickedButtonGetStudentSubjects)
 END_MESSAGE_MAP()
 
 
@@ -843,4 +844,12 @@ void CStudentsGUIDlg::OnBnClickedButtonAddSubjectsAndMarksForStudent()
     m_AddSubjectsAndMarks.setSubjects(&m_InputSubjects.getListOfSubjects());
     m_AddSubjectsAndMarks.setStudent(m_Student);
     m_AddSubjectsAndMarks.DoModal();
+    GetDlgItem(IDC_BUTTON_GET_STUDENT_SUBJECTS)->EnableWindow(TRUE);
+}
+
+
+void CStudentsGUIDlg::OnBnClickedButtonGetStudentSubjects()
+{
+    m_ShowSubjectsAndMarks.setRecordBook(&m_Student->getRecordBook());
+    m_ShowSubjectsAndMarks.DoModal();
 }

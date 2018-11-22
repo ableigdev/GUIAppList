@@ -11,6 +11,7 @@
 #include "Iterator.h"
 #include "InputSubjects.h"
 #include "AddSubjectsAndMarksForStudent.h"
+#include "ShowSubjectsAndMarks.h"
 #include <functional>
 
 // CStudentsGUIDlg dialog
@@ -43,6 +44,7 @@ private:
     SelectAction m_SelectAction;
     InputSubjects m_InputSubjects;
     AddSubjectsAndMarksForStudent m_AddSubjectsAndMarks;
+    ShowSubjectsAndMarks m_ShowSubjectsAndMarks;
 
     int m_FontAveChar;
     int m_MaxExtListStud;
@@ -123,4 +125,5 @@ public:
     afx_msg void OnBnClickedButtonChange();
     afx_msg void OnBnClickedButtonInputSubjectsAndMarks();
     afx_msg void OnBnClickedButtonAddSubjectsAndMarksForStudent();
+    afx_msg void OnBnClickedButtonGetStudentSubjects();
 };
