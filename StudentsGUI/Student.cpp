@@ -71,12 +71,29 @@ float Student::getAverageGrade() const
     return m_AverageGrade;
 }
 
-void Student::setRecordBookPair(CString* nameOfTheSubject, float* valueOfTheMark)
+void Student::setRecordBookPair(CString& nameOfTheSubject, float& valueOfTheMark)
 {
-    m_RecordBook.pushInSortList({ nameOfTheSubject, valueOfTheMark });
+    bool flag = false;
+    if (!m_RecordBook.isEmpty())
+    {
+        for (size_t i = 0; i < m_RecordBook.getSize(); ++i, ++m_RecordBook)
+        {
+            if (m_RecordBook.getReferencesCurrentData().first == nameOfTheSubject)
+            {
+                m_RecordBook.getReferencesCurrentData().second = valueOfTheMark;
+                flag = true; 
+                break;
+            }
+        }
+    }
+    
+    if (!flag)
+    {
+        m_RecordBook.pushBack({ nameOfTheSubject, valueOfTheMark });
+    }
 }
 
-List<std::pair<CString*, float*>>& Student::getRecordBook()
+List<std::pair<CString, float>>& Student::getRecordBook()
 {
     return m_RecordBook;
 }
