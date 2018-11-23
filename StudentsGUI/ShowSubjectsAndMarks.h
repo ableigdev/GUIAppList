@@ -21,7 +21,12 @@ public:
 private:
     List<std::pair<CString*, float*>>* m_RecordBook;
     CListBox m_RecordBookListBox;
+    CListBox m_MarkListBox;
     CString m_FindRecord;
+    int m_FontAveChar;
+    int m_MaxExtList;
+    int m_OldSubjectSelect;
+    int m_OldMarkSelect;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
@@ -29,7 +34,9 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-    afx_msg void OnEnChangeEditFindSubjectsAndMarks();
-    afx_msg void OnLbnSelchangeListSubjectsAndMarks();
     afx_msg void OnBnClickedButtonCloseShowSubjectWindow();
+    afx_msg void OnEnChangeEditFindSubjectsInShowWindow();
+    afx_msg void OnLbnSelchangeListStudentsMarks();
+    afx_msg void OnBnClickedButtonDeleteSubjectFromRecordbook();
+    afx_msg void OnLbnSelchangeListStudentsSubjectsInShowWindow();
 };
