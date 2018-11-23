@@ -32,8 +32,6 @@ public:
 private:
     CString getStudentString(Student& student);
     void doAction(std::function<void()> groupAcion, std::function<void()> studentAction, CString actionName);
-    template <typename TypeOfList>
-    void for_each_listbox(Iterator<TypeOfList> list, CListBox& listbox, int& oldSelect, int& selected);
 
 private:
     InputNewName m_InputNewName;
@@ -93,8 +91,6 @@ protected:
     void showString(NameList<Student>& group);
 
     void CorrectListHScrl(CListBox &ListBox);
-    void CorrectListHScrlPart(CListBox &ListBox, int &MaxExtCx, int Index = 0);
-    void CorrectListHScrlDel(CListBox &ListBox, int &MaxExtCx, int Index);
 
     void deleteStudent();
     void modifyStudent();

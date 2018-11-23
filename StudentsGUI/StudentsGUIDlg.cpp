@@ -7,6 +7,7 @@
 #include "StudentsGUIDlg.h"
 #include "afxdialogex.h"
 #include "constants.h"
+#include "CommonFunctions.h"
 #include <algorithm>
 
 #ifdef _DEBUG
@@ -201,7 +202,7 @@ void CStudentsGUIDlg::deleteStudentList()
 {
     deleteStudentInformationList();
     m_ListStudents.ResetContent();
-    CorrectListHScrlPart(m_ListStudents, m_MaxExtListStud);
+    common::CorrectScroll::correctListHScrlPart(m_ListStudents, m_MaxExtListStud, m_FontAveChar);
 }
 
 void CStudentsGUIDlg::deleteStudentInformationList()
@@ -288,7 +289,7 @@ void CStudentsGUIDlg::disableFaculty()
 
 void CStudentsGUIDlg::showString(Student& student)
 {
-    CorrectListHScrlPart(m_ListStudents, m_MaxExtListStud, m_ListStudents.AddString((LPCTSTR)getStudentString(student)));
+    common::CorrectScroll::correctListHScrlPart(m_ListStudents, m_MaxExtListStud, m_FontAveChar, m_ListStudents.AddString((LPCTSTR)getStudentString(student)));
 }
 
 void CStudentsGUIDlg::showStudent()
@@ -317,7 +318,7 @@ void CStudentsGUIDlg::showStudent()
 int CStudentsGUIDlg::setNewSelect(CListBox& listBox, int& maxExtCx)
 {
     int currentSelect = listBox.GetCurSel();
-    CorrectListHScrlDel(listBox, maxExtCx, currentSelect);
+    common::CorrectScroll::correctListHScrlDel(listBox, maxExtCx, m_FontAveChar, currentSelect);
     
     if (currentSelect != 0)
     {
@@ -333,9 +334,9 @@ int CStudentsGUIDlg::changeItem(CListBox& listBox, int& maxExtCx, const CString&
     int currentSelect = listBox.GetCurSel();
     if (currentSelect != LB_ERR)
     {
-        CorrectListHScrlDel(listBox, maxExtCx, currentSelect);
+        common::CorrectScroll::correctListHScrlDel(listBox, maxExtCx, m_FontAveChar, currentSelect);
         listBox.SetCurSel(currentSelect = listBox.AddString(name));
-        CorrectListHScrlPart(listBox, maxExtCx, currentSelect);
+        common::CorrectScroll::correctListHScrlPart(listBox, maxExtCx, m_FontAveChar, currentSelect);
     }
     return currentSelect;
 }
@@ -414,66 +415,6 @@ void CStudentsGUIDlg::CorrectListHScrl(CListBox& listBox)
         dx += m_FontAveChar;
     }
     listBox.SetHorizontalExtent(dx);
-}
-
-void CStudentsGUIDlg::CorrectListHScrlPart(CListBox& listBox, int& maxExtCx, int index)
-{
-    bool isModify = true;
-    if (listBox.GetCount() > 0)
-    {
-        CDC* pDC = listBox.GetDC();
-        CFont* pOldFont = pDC->SelectObject(listBox.GetFont());
-        CString str;
-        CSize sz;
-
-        listBox.GetText(index, str);
-        sz = pDC->GetTextExtent(str);
-
-        if ((isModify = sz.cx + m_FontAveChar > maxExtCx))
-        {
-            maxExtCx = sz.cx + m_FontAveChar;
-        }
-        pDC->SelectObject(pOldFont);
-        listBox.ReleaseDC(pDC);
-    }
-    else
-    {
-        maxExtCx = 0;
-    }
-    if (isModify)
-    {
-        listBox.SetHorizontalExtent(maxExtCx);
-    }
-}
-
-void CStudentsGUIDlg::CorrectListHScrlDel(CListBox& listBox, int& maxExtCx, int index)
-{
-    CDC* pDC = listBox.GetDC();
-    CFont* pOldFont = pDC->SelectObject(listBox.GetFont());
-    CString str;
-    CSize sz;
-
-    listBox.GetText(index, str);
-    sz = pDC->GetTextExtent(str);
-    listBox.DeleteString(index);
-    if (sz.cx + m_FontAveChar == maxExtCx)
-    {
-        maxExtCx = 0;
-        for (int i = 0; i < listBox.GetCount(); i++)
-        {
-            listBox.GetText(i, str);
-            sz = pDC->GetTextExtent(str);
-
-            if (sz.cx > maxExtCx)
-            {
-                maxExtCx = sz.cx;
-            }
-        }
-        maxExtCx += m_FontAveChar;
-        listBox.SetHorizontalExtent(maxExtCx);
-    }
-    pDC->SelectObject(pOldFont);
-    listBox.ReleaseDC(pDC);
 }
 
 int CStudentsGUIDlg::getStudentSelect() const
@@ -652,14 +593,12 @@ void CStudentsGUIDlg::OnEnChangeEditStudent()
 
 void CStudentsGUIDlg::OnLbnSelchangeListStudents()
 {
-    // TODO: Add a common iterator
-    // Status: Done
     int selected = getStudentSelect();
 
     if (selected != LB_ERR && selected != m_OldStudSelect)
     {
         Iterator <Student> iter(m_CurrentGroup);
-        for_each_listbox(iter, m_ListStudents, m_OldStudSelect, selected);
+        common::for_each_listbox(iter, m_ListStudents, m_OldStudSelect, selected);
         m_Student = &m_CurrentGroup->getReferencesCurrentData();
         showStudentInformation(*m_Student);
         setSelectedActions(TRUE);
@@ -693,7 +632,7 @@ void CStudentsGUIDlg::OnLbnSelchangeListGroups()
     if (selected != LB_ERR && selected != m_OldGroupSelect)
     {
         Iterator <NameList<Student>> iter(&m_Faculty);
-        for_each_listbox(iter, m_ListGroups, m_OldGroupSelect, selected);
+        common::for_each_listbox(iter, m_ListGroups, m_OldGroupSelect, selected);
         m_CurrentGroup = &m_Faculty.getReferencesCurrentData();
         showStudent();
         setSelectedActions(TRUE);
@@ -723,13 +662,13 @@ void CStudentsGUIDlg::showGroups()
 
 void CStudentsGUIDlg::showString(NameList<Student>& group)
 {
-    CorrectListHScrlPart(m_ListGroups, m_MaxExtListGroup, m_ListGroups.AddString((LPCTSTR)group.getNameClassList().c_str()));
+    common::CorrectScroll::correctListHScrlPart(m_ListGroups, m_MaxExtListGroup, m_FontAveChar, m_ListGroups.AddString((LPCTSTR)group.getNameClassList().c_str()));
 }
 
 void CStudentsGUIDlg::deleteGroupList()
 {
     m_ListGroups.ResetContent();
-    CorrectListHScrlPart(m_ListGroups, m_MaxExtListGroup);
+    common::CorrectScroll::correctListHScrlPart(m_ListGroups, m_MaxExtListGroup, m_FontAveChar);
 }
 
 void CStudentsGUIDlg::OnBnClickedButtonChange()
@@ -813,26 +752,6 @@ void CStudentsGUIDlg::doAction(std::function<void()> groupAction, std::function<
     }
 }
 
-template <typename TypeOfList>
-void CStudentsGUIDlg::for_each_listbox(Iterator<TypeOfList> list, CListBox& listbox, int& oldSelect, int& selected)
-{
-    if (oldSelect == LB_ERR)
-    {
-        if ((oldSelect = selected >= (oldSelect = listbox.GetCount() - 1) >> 1 ? oldSelect : 0) == 0)
-        {
-            list.getPointer()->setCurrentNodeOnTheBegin();
-        }
-        else
-        {
-            list.getPointer()->setCurrentNodeOnTheEnd();
-        }
-    }
-
-    for (; selected < oldSelect; --oldSelect, --list);
-    for (; selected > oldSelect; ++oldSelect, ++list);
-}
-
-
 void CStudentsGUIDlg::OnBnClickedButtonInputSubjectsAndMarks()
 {
     m_InputSubjects.DoModal();
@@ -846,7 +765,6 @@ void CStudentsGUIDlg::OnBnClickedButtonAddSubjectsAndMarksForStudent()
     m_AddSubjectsAndMarks.DoModal();
     GetDlgItem(IDC_BUTTON_GET_STUDENT_SUBJECTS)->EnableWindow(TRUE);
 }
-
 
 void CStudentsGUIDlg::OnBnClickedButtonGetStudentSubjects()
 {
