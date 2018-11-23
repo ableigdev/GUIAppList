@@ -6,6 +6,7 @@
 #include "AddSubjectsAndMarksForStudent.h"
 #include "afxdialogex.h"
 #include "constants.h"
+#include "CommonFunctions.h"
 
 
 // AddSubjectsAndMarksForStudent dialog
@@ -48,11 +49,21 @@ END_MESSAGE_MAP()
 BOOL AddSubjectsAndMarksForStudent::OnInitDialog()
 {
     UpdateData(FALSE);
+    SetDefID(IDC_STATIC_CHOOSE_SUBJECT);
+    TEXTMETRIC tm;
+    CDC* pDC = m_ListSubjects.GetDC();
+    CFont *pOldFont = pDC->SelectObject(m_ListSubjects.GetFont());
+    pDC->GetTextMetrics(&tm);
+    pDC->SelectObject(pOldFont);
+    m_ListSubjects.ReleaseDC(pDC);
+    m_FontAveChar = tm.tmAveCharWidth;
+    m_MaxExtList = 0;
+
     if (!m_Subjects->isEmpty() && !m_Marks->isEmpty())
     {
         for (size_t i = 0; i < m_Subjects->getSize(); ++i, ++*m_Subjects)
         {
-            m_ListSubjects.AddString(m_Subjects->getReferencesCurrentData());
+            common::CorrectScroll::correctListHScrlPart(m_ListSubjects, m_MaxExtList, m_FontAveChar, m_ListSubjects.AddString((LPCTSTR)m_Subjects->getReferencesCurrentData()));
         }
         for (size_t i = 0; i < m_Marks->getSize(); ++i, ++*m_Marks)
         {
@@ -74,12 +85,14 @@ void AddSubjectsAndMarksForStudent::OnBnClickedButtonCloseWindow()
     CDialogEx::OnOK();
 }
 
-
 void AddSubjectsAndMarksForStudent::OnBnClickedButtonAddStudentSubject()
 {
     if (m_ListSubjects.GetCurSel() != LB_ERR && m_ListMarks.GetCurSel() != LB_ERR)
     {
-        m_Student->setRecordBookPair(&m_Subjects->getReferencesCurrentData(), &m_Marks->getReferencesCurrentData());
+        if (!m_Student->setRecordBookPair(&m_Subjects->getReferencesCurrentData(), &m_Marks->getReferencesCurrentData()))
+        {
+            MessageBox(__TEXT("There is subject exists in the record book!"), __TEXT("Error"), MB_OK | MB_ICONSTOP);
+        }
     }
     else
     {
@@ -102,25 +115,6 @@ void AddSubjectsAndMarksForStudent::setStudent(Student* student)
     m_Student = student;
 }
 
-template <typename TypeOfList>
-void AddSubjectsAndMarksForStudent::for_each_listbox(Iterator<TypeOfList> list, CListBox& listbox, int& oldSelect, int& selected)
-{
-    if (oldSelect == LB_ERR)
-    {
-        if ((oldSelect = selected >= (oldSelect = listbox.GetCount() - 1) >> 1 ? oldSelect : 0) == 0)
-        {
-            list.getPointer()->setCurrentNodeOnTheBegin();
-        }
-        else
-        {
-            list.getPointer()->setCurrentNodeOnTheEnd();
-        }
-    }
-
-    for (; selected < oldSelect; --oldSelect, --list);
-    for (; selected > oldSelect; ++oldSelect, ++list);
-}
-
 void AddSubjectsAndMarksForStudent::OnEnChangeEditFindSubject()
 {
     int search;
@@ -140,7 +134,7 @@ void AddSubjectsAndMarksForStudent::OnLbnSelchangeListSubjects()
     if (selected != LB_ERR && selected != m_OldSubjectSelect)
     {
         Iterator<CString> iter(m_Subjects);
-        for_each_listbox(iter, m_ListSubjects, m_OldSubjectSelect, selected);
+        common::for_each_listbox(iter, m_ListSubjects, m_OldSubjectSelect, selected);
     }
 }
 
@@ -163,6 +157,6 @@ void AddSubjectsAndMarksForStudent::OnLbnSelchangeListMarks()
     if (selected != LB_ERR && selected != m_OldMarkSelect)
     {
         Iterator<float> iter(m_Marks);
-        for_each_listbox(iter, m_ListMarks, m_OldMarkSelect, selected);
+        common::for_each_listbox(iter, m_ListMarks, m_OldMarkSelect, selected);
     }
 }

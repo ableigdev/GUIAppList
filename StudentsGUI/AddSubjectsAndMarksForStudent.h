@@ -24,10 +24,6 @@ public:
     void setStudent(Student* student);
 
 private:
-    template <typename TypeOfList>
-    void for_each_listbox(Iterator<TypeOfList> list, CListBox& listbox, int& oldSelect, int& selected);
-
-private:
     List<CString>* m_Subjects;
     List<float>* m_Marks;
     Student* m_Student;
@@ -37,6 +33,8 @@ private:
     CString m_ValueOfTheMark;
     int m_OldSubjectSelect;
     int m_OldMarkSelect;
+    int m_FontAveChar;
+    int m_MaxExtList;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
