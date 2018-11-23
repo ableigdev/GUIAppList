@@ -16,7 +16,11 @@ IMPLEMENT_DYNAMIC(InputStudentInformation, CDialogEx)
 InputStudentInformation::InputStudentInformation(CWnd* pParent /*=NULL*/)
 	: CDialogEx(IDD_DIALOG_INPUT_STUDENT, pParent)
 {
-
+    m_Surname = __TEXT("");
+    m_Name = __TEXT("");
+    m_Lastname = __TEXT("");
+    m_BirthYear = 0;
+    m_AverageGrade = 0.0;
 }
 
 InputStudentInformation::~InputStudentInformation()
@@ -27,35 +31,35 @@ void InputStudentInformation::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 
-    CString surname = m_Student->getSurname().c_str();
-    CString name = m_Student->getName().c_str();
-    CString lastname = m_Student->getLastname().c_str();
-    short int year = m_Student->getBirthYear();
-    float grade = m_Student->getAverageGrade();
+    m_Surname = m_Student->getSurname().c_str();
+    m_Name = m_Student->getName().c_str();
+    m_Lastname = m_Student->getLastname().c_str();
+    m_BirthYear = m_Student->getBirthYear();
+    m_AverageGrade = m_Student->getAverageGrade();
 
     DDX_Control(pDX, IDC_COMBO_GROUPS, m_ComboGroupList);
-    DDX_Text(pDX, IDC_STUDENT_EDIT_SURNAME, surname);
-    surname.TrimLeft();
-    surname.TrimRight();
-    m_Student->setSurname(surname.GetString());
+    DDX_Text(pDX, IDC_STUDENT_EDIT_SURNAME, m_Surname);
+    m_Surname.TrimLeft();
+    m_Surname.TrimRight();
+    m_Student->setSurname(m_Surname.GetString());
 
-    DDX_Text(pDX, IDC_STUDENT_EDIT_NAME, name);
-    name.TrimLeft();
-    name.TrimRight();
-    m_Student->setName(name.GetString());
+    DDX_Text(pDX, IDC_STUDENT_EDIT_NAME, m_Name);
+    m_Name.TrimLeft();
+    m_Name.TrimRight();
+    m_Student->setName(m_Name.GetString());
 
-    DDX_Text(pDX, IDC_STUDENT_EDIT_LASTNAME, lastname);
-    lastname.TrimLeft();
-    lastname.TrimRight();
-    m_Student->setLastname(lastname.GetString());
+    DDX_Text(pDX, IDC_STUDENT_EDIT_LASTNAME, m_Lastname);
+    m_Lastname.TrimLeft();
+    m_Lastname.TrimRight();
+    m_Student->setLastname(m_Lastname.GetString());
 
-    DDX_Text(pDX, IDC_STUDENT_EDIT_BIRTH_YEAR, year);
-    DDV_MinMaxUInt(pDX, year, 1900, 2100);
-    m_Student->setBirthYear(year);
+    DDX_Text(pDX, IDC_STUDENT_EDIT_BIRTH_YEAR, m_BirthYear);
+    DDV_MinMaxUInt(pDX, m_BirthYear, 1900, 2100);
+    m_Student->setBirthYear(m_BirthYear);
 
-    DDX_Text(pDX, IDC_STUDENT_EDIT_AVERAGE_MARK, grade);
-    DDV_MinMaxFloat(pDX, grade, 0.f, 5.f);
-    m_Student->setAverageGrade(grade);
+    DDX_Text(pDX, IDC_STUDENT_EDIT_AVERAGE_MARK, m_AverageGrade);
+    DDV_MinMaxFloat(pDX, m_AverageGrade, 0.f, 5.f);
+    m_Student->setAverageGrade(m_AverageGrade);
 }
 
 
@@ -185,9 +189,8 @@ BOOL InputStudentInformation::OnInitDialog()
 
 void InputStudentInformation::OnBnClickedStudentButtonNext()
 {
-    if (UpdateData() == TRUE)
+    if (UpdateData() == TRUE && addStudent())
     {
-        addStudent();
         setActiveSurname();
     }
 }

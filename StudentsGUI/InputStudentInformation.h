@@ -43,6 +43,12 @@ private:
     int m_ChangeFlag;
     bool m_IsModify;
     int m_CurrentGroupIndex;
+    CString m_Surname;
+    CString m_Name;
+    CString m_Lastname;
+    short m_BirthYear;
+    float m_AverageGrade;
+
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
