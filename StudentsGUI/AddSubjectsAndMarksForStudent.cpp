@@ -89,10 +89,7 @@ void AddSubjectsAndMarksForStudent::OnBnClickedButtonAddStudentSubject()
 {
     if (m_ListSubjects.GetCurSel() != LB_ERR && m_ListMarks.GetCurSel() != LB_ERR)
     {
-        if (!m_Student->setRecordBookPair(&m_Subjects->getReferencesCurrentData(), &m_Marks->getReferencesCurrentData()))
-        {
-            MessageBox(__TEXT("There is subject exists in the record book!"), __TEXT("Error"), MB_OK | MB_ICONSTOP);
-        }
+        m_Student->setRecordBookPair(m_Subjects->getReferencesCurrentData(), m_Marks->getReferencesCurrentData());
     }
     else
     {

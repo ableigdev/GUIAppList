@@ -16,10 +16,10 @@ public:
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_DIALOG_SHOW_SUBJECTS_AND_MARKS };
 #endif
-    void setRecordBook(List<std::pair<CString*, float*>>* recordBook);
+    void setRecordBook(List<std::pair<CString, float>>* recordBook);
 
 private:
-    List<std::pair<CString*, float*>>* m_RecordBook;
+    List<std::pair<CString, float>>* m_RecordBook;
     CListBox m_RecordBookListBox;
     CListBox m_MarkListBox;
     CString m_FindRecord;

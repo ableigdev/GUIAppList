@@ -65,10 +65,10 @@ BOOL ShowSubjectsAndMarks::OnInitDialog()
     {
         for (size_t i = 0; i < m_RecordBook->getSize(); ++i, ++*m_RecordBook)
         {
-            int index = m_RecordBookListBox.AddString((LPCTSTR)*m_RecordBook->getReferencesCurrentData().first);
+            int index = m_RecordBookListBox.AddString((LPCTSTR)m_RecordBook->getReferencesCurrentData().first);
             common::CorrectScroll::correctListHScrlPart(m_RecordBookListBox, m_MaxExtList, m_FontAveChar, index);
             CString buf;
-            buf.Format(__TEXT("%4.2f"), *m_RecordBook->getReferencesCurrentData().second);
+            buf.Format(__TEXT("%4.2f"), m_RecordBook->getReferencesCurrentData().second);
             m_MarkListBox.InsertString(index, buf);
         }
         m_RecordBook->setCurrentNodeOnTheBegin();
@@ -77,7 +77,7 @@ BOOL ShowSubjectsAndMarks::OnInitDialog()
     return FALSE;
 }
 
-void ShowSubjectsAndMarks::setRecordBook(List<std::pair<CString*, float*>>* recordBook)
+void ShowSubjectsAndMarks::setRecordBook(List<std::pair<CString, float>>* recordBook)
 {
     m_RecordBook = recordBook;
 }
@@ -105,7 +105,7 @@ void ShowSubjectsAndMarks::OnLbnSelchangeListStudentsSubjectsInShowWindow()
     int selected = m_RecordBookListBox.GetCurSel();
     if (selected != LB_ERR && selected != m_OldSubjectSelect)
     {
-        Iterator<std::pair<CString*, float*>> iter(m_RecordBook);
+        Iterator<std::pair<CString, float>> iter(m_RecordBook);
         common::for_each_listbox(iter, m_RecordBookListBox, m_OldSubjectSelect, selected);
         if (m_MarkListBox.GetCurSel() != selected)
         {
@@ -133,5 +133,13 @@ void ShowSubjectsAndMarks::OnBnClickedButtonDeleteSubjectFromRecordbook()
     common::CorrectScroll::correctListHScrlDel(m_RecordBookListBox, m_MaxExtList, m_FontAveChar, m_RecordBookListBox.GetCurSel());
     common::CorrectScroll::correctListHScrlDel(m_MarkListBox, m_MaxExtList, m_FontAveChar, m_MarkListBox.GetCurSel());
     m_RecordBook->setCurrentNodeOnTheBegin();
+    m_OldSubjectSelect = LB_ERR;
+    m_OldMarkSelect = LB_ERR;
     GetDlgItem(IDC_BUTTON_DELETE_SUBJECT_FROM_RECORDBOOK)->EnableWindow(FALSE);
+    if (m_RecordBook->isEmpty())
+    {
+        GetDlgItem(IDC_EDIT_FIND_SUBJECTS_IN_SHOW_WINDOW)->EnableWindow(FALSE);
+        GetDlgItem(IDC_LIST_STUDENTS_SUBJECTS_IN_SHOW_WINDOW)->EnableWindow(FALSE);
+        GetDlgItem(IDC_LIST_STUDENTS_MARKS)->EnableWindow(FALSE);
+    }
 }
