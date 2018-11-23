@@ -32,6 +32,7 @@ public:
 private:
     CString getStudentString(Student& student);
     void doAction(std::function<void()> groupAcion, std::function<void()> studentAction, CString actionName);
+    void disableSubjectsButton();
 
 private:
     InputNewName m_InputNewName;

@@ -481,6 +481,12 @@ void CStudentsGUIDlg::OnBnClickedButtonDelete()
     doAction(std::bind(&CStudentsGUIDlg::deleteSelectedGroup, this), std::bind(&CStudentsGUIDlg::deleteSelectedStudent, this), __TEXT("delete"));
 }
 
+void CStudentsGUIDlg::disableSubjectsButton()
+{
+    GetDlgItem(IDC_BUTTON_ADD_SUBJECTS_AND_MARKS_FOR_STUDENT)->EnableWindow(FALSE);
+    GetDlgItem(IDC_BUTTON_GET_STUDENT_SUBJECTS)->EnableWindow(FALSE);
+}
+
 void CStudentsGUIDlg::deleteSelectedStudent()
 {
     m_CurrentGroup->deleteElement(*m_Student);
@@ -495,6 +501,7 @@ void CStudentsGUIDlg::deleteSelectedStudent()
         setSelectedActions(FALSE);
         m_Student = NULL;
         GetDlgItem(IDC_BUTTON_DELETE_ALL_STUDENTS)->EnableWindow(FALSE);
+        disableSubjectsButton();
     }
     showStudent();
 }
@@ -529,6 +536,7 @@ void CStudentsGUIDlg::OnBnClickedButtonDeleteAllStudents()
     deleteStudentList();
     setSelectedActions(TRUE);
     GetDlgItem(IDC_BUTTON_DELETE_ALL_STUDENTS)->EnableWindow(FALSE);
+    disableSubjectsButton();
     m_StudentName = __TEXT("");
     UpdateData(FALSE);
 }
@@ -575,6 +583,7 @@ void CStudentsGUIDlg::OnBnClickedButtonDeleteAllGroup()
     setSelectedActions(FALSE);
     deleteStudentList();
     deleteGroupList();
+    disableSubjectsButton();
     m_Faculty.deleteAllElements();
 }
 
@@ -607,6 +616,11 @@ void CStudentsGUIDlg::OnLbnSelchangeListStudents()
         {
             GetDlgItem(IDC_BUTTON_ADD_SUBJECTS_AND_MARKS_FOR_STUDENT)->EnableWindow(TRUE);
         }
+        else
+        {
+            GetDlgItem(IDC_BUTTON_ADD_SUBJECTS_AND_MARKS_FOR_STUDENT)->EnableWindow(FALSE);
+        }
+        !m_Student->getRecordBook().isEmpty() ? GetDlgItem(IDC_BUTTON_GET_STUDENT_SUBJECTS)->EnableWindow(TRUE) : GetDlgItem(IDC_BUTTON_GET_STUDENT_SUBJECTS)->EnableWindow(FALSE);
     }
     GetDlgItem(IDC_BUTTON_CHANGE)->SetFocus();
     SetDefID(IDC_BUTTON_CHANGE);
