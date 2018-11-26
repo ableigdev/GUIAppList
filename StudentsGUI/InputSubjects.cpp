@@ -27,6 +27,7 @@ void InputSubjects::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
     DDX_Control(pDX, IDC_LIST_SUBJECT_INPUT_WINDOW, m_SubjectsList);
+    DDX_Control(pDX, IDC_LIST_INPUT_MARKS, m_MarksList);
     DDX_Text(pDX, IDC_EDIT_MARK, m_CurrentValueOfTheMark);
     DDV_MinMaxFloat(pDX, m_CurrentValueOfTheMark, 0.f, 5.f);
 
@@ -42,6 +43,8 @@ BEGIN_MESSAGE_MAP(InputSubjects, CDialogEx)
     ON_BN_CLICKED(IDC_BUTTON_CLOSE_INPUT_SUBJECT_WINDOW, &InputSubjects::OnBnClickedButtonCloseInputSubjectWindow)
     ON_LBN_SELCHANGE(IDC_LIST_SUBJECT_INPUT_WINDOW, &InputSubjects::OnLbnSelchangeListSubjectInputWindow)
     ON_BN_CLICKED(IDC_BUTTON_DELETE_SELECTED_SUBJECT, &InputSubjects::OnBnClickedButtonDeleteSelectedSubject)
+    ON_LBN_SELCHANGE(IDC_LIST_INPUT_MARKS, &InputSubjects::OnLbnSelchangeListInputMarks)
+    ON_BN_CLICKED(IDC_BUTTON_DELETE_SELECTED_MARK, &InputSubjects::OnBnClickedButtonDeleteSelectedMark)
 END_MESSAGE_MAP()
 
 
@@ -67,6 +70,9 @@ void InputSubjects::OnBnClickedButtonAddMark()
         if (!m_Marks.findValue(m_CurrentValueOfTheMark))
         {
             m_Marks.pushInSortList(m_CurrentValueOfTheMark);
+            CString buf;
+            buf.Format(__TEXT("%4.2f"), m_CurrentValueOfTheMark);
+            common::CorrectScroll::correctListHScrlPart(m_MarksList, m_MaxExtList, m_FontAveChar, m_MarksList.AddString((LPCTSTR)buf));
         }
         else
         {
@@ -102,6 +108,7 @@ BOOL InputSubjects::OnInitDialog()
 {
     UpdateData(FALSE);
     m_SubjectsList.ResetContent();
+    m_MarksList.ResetContent();
     TEXTMETRIC tm;
     CDC* pDC = m_SubjectsList.GetDC();
     CFont *pOldFont = pDC->SelectObject(m_SubjectsList.GetFont());
@@ -113,6 +120,7 @@ BOOL InputSubjects::OnInitDialog()
     m_CurrentValueOfTheMark = 0;
     m_MaxExtList = 0;
     m_OldSubjectSelect = LB_ERR;
+    m_OldMarkSelect = LB_ERR;
     SetDefID(IDC_STATIC_ADD_DATA);
     GetDlgItem(IDC_BUTTON_DELETE_SELECTED_SUBJECT)->EnableWindow(FALSE);
     GetDlgItem(IDC_BUTTON_ADD_SUBJECT)->SetFocus();
@@ -126,6 +134,16 @@ BOOL InputSubjects::OnInitDialog()
             common::CorrectScroll::correctListHScrlPart(m_SubjectsList, m_MaxExtList, m_FontAveChar, m_SubjectsList.AddString((LPCTSTR)m_Subjects.getReferencesCurrentData()));
         }
         m_Subjects.setCurrentNodeOnTheBegin();
+    }
+
+    if (!m_Marks.isEmpty())
+    {
+        for (size_t i = 0; i < m_Marks.getSize(); ++i, m_Marks)
+        {
+            CString buf;
+            buf.Format(__TEXT("%4.2f"), m_Marks.getReferencesCurrentData());
+            common::CorrectScroll::correctListHScrlPart(m_MarksList, m_MaxExtList, m_FontAveChar, m_MarksList.AddString((LPCTSTR)buf));
+        }
     }
 
     return FALSE;
@@ -175,4 +193,26 @@ void InputSubjects::OnBnClickedButtonDeleteSelectedSubject()
     common::CorrectScroll::correctListHScrlDel(m_SubjectsList, m_MaxExtList, m_FontAveChar, m_SubjectsList.GetCurSel());
     m_Subjects.setCurrentNodeOnTheBegin();
     GetDlgItem(IDC_BUTTON_DELETE_SELECTED_SUBJECT)->EnableWindow(FALSE);
+}
+
+
+void InputSubjects::OnLbnSelchangeListInputMarks()
+{
+    int selected = m_MarksList.GetCurSel();
+    if (selected != LB_ERR && selected != m_OldMarkSelect)
+    {
+        Iterator <float> iter(&m_Marks);
+        common::for_each_listbox(iter, m_MarksList, m_OldMarkSelect, selected);
+    }
+    GetDlgItem(IDC_BUTTON_DELETE_SELECTED_MARK)->EnableWindow(TRUE);
+}
+
+
+void InputSubjects::OnBnClickedButtonDeleteSelectedMark()
+{
+    float mark = m_Marks.getValueCurrentData();
+    m_Marks.deleteElement(mark);
+    common::CorrectScroll::correctListHScrlDel(m_MarksList, m_MaxExtList, m_FontAveChar, m_MarksList.GetCurSel());
+    m_Marks.setCurrentNodeOnTheBegin();
+    GetDlgItem(IDC_BUTTON_DELETE_SELECTED_MARK)->EnableWindow(FALSE);
 }

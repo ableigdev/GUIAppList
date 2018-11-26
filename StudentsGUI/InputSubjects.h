@@ -30,11 +30,13 @@ private:
     List<CString> m_Subjects;
     List<float> m_Marks;
     CListBox m_SubjectsList;
+    CListBox m_MarksList;
     CString m_CurrentNameOfTheSubject;
     float m_CurrentValueOfTheMark;
     int m_FontAveChar;
     int m_MaxExtList;
     int m_OldSubjectSelect;
+    int m_OldMarkSelect;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
@@ -47,4 +49,6 @@ public:
     afx_msg void OnBnClickedButtonCloseInputSubjectWindow();
     afx_msg void OnLbnSelchangeListSubjectInputWindow();
     afx_msg void OnBnClickedButtonDeleteSelectedSubject();
+    afx_msg void OnLbnSelchangeListInputMarks();
+    afx_msg void OnBnClickedButtonDeleteSelectedMark();
 };
