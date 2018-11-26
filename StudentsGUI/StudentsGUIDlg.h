@@ -30,7 +30,6 @@ public:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV support
 
 private:
-    CString getStudentString(Student& student);
     void doAction(std::function<void()> groupAcion, std::function<void()> studentAction, CString actionName);
     void disableSubjectsButton();
 
