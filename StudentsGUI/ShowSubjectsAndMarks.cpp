@@ -61,6 +61,13 @@ BOOL ShowSubjectsAndMarks::OnInitDialog()
     m_RecordBookListBox.ResetContent();
     m_MarkListBox.ResetContent();
     m_FindRecord = __TEXT("");
+
+    if (m_Student != NULL)
+    {
+        CString outTitle = __TEXT("Show Subjects And Marks (") + common::getStudentString(*m_Student) + __TEXT(")");
+        SetWindowText((LPCTSTR)outTitle);
+    }
+
     if (m_RecordBook != NULL)
     {
         for (size_t i = 0; i < m_RecordBook->getSize(); ++i, ++*m_RecordBook)
@@ -80,6 +87,11 @@ BOOL ShowSubjectsAndMarks::OnInitDialog()
 void ShowSubjectsAndMarks::setRecordBook(List<std::pair<CString, float>>* recordBook)
 {
     m_RecordBook = recordBook;
+}
+
+void ShowSubjectsAndMarks::setStudent(Student* student)
+{
+    m_Student = student;
 }
 
 void ShowSubjectsAndMarks::OnBnClickedButtonCloseShowSubjectWindow()

@@ -50,6 +50,8 @@ BOOL AddSubjectsAndMarksForStudent::OnInitDialog()
 {
     UpdateData(FALSE);
     SetDefID(IDC_STATIC_CHOOSE_SUBJECT);
+    CString outTitle = __TEXT("Add Subject And Mark For ") + common::getStudentString(*m_Student);
+    SetWindowText((LPCTSTR)outTitle);
     TEXTMETRIC tm;
     CDC* pDC = m_ListSubjects.GetDC();
     CFont *pOldFont = pDC->SelectObject(m_ListSubjects.GetFont());

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "List.h"
+#include "Student.h"
 
 // ShowSubjectsAndMarks dialog
 
@@ -17,9 +18,11 @@ public:
 	enum { IDD = IDD_DIALOG_SHOW_SUBJECTS_AND_MARKS };
 #endif
     void setRecordBook(List<std::pair<CString, float>>* recordBook);
+    void setStudent(Student* student);
 
 private:
     List<std::pair<CString, float>>* m_RecordBook;
+    Student* m_Student;
     CListBox m_RecordBookListBox;
     CListBox m_MarkListBox;
     CString m_FindRecord;
