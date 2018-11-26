@@ -31,6 +31,20 @@ void common::CorrectScroll::correctListHScrlPart(CListBox& listBox, int& maxExtC
     }
 }
 
+CString common::getStudentString(Student& student)
+{
+    CString str1(student.getSurname().c_str());
+    str1.Append(__TEXT(" "));
+    str1.Append(student.getName().substr(0, 1).c_str());
+    str1.Append(__TEXT(". "));
+    if (!student.getLastname().empty())
+    {
+        str1.Append(student.getLastname().substr(0, 1).c_str());
+        str1.Append(__TEXT("."));
+    }
+    return str1;
+}
+
 void common::CorrectScroll::correctListHScrlDel(CListBox& listBox, int& maxExtCx, int& fontAverageChar, int index)
 {
     CDC* pDC = listBox.GetDC();

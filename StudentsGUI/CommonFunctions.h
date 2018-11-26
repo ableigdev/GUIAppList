@@ -2,6 +2,7 @@
 
 #include "Iterator.h"
 #include "List.h"
+#include "Student.h"
 #include "afxwin.h"
 
 namespace common
@@ -17,6 +18,8 @@ namespace common
         for (; selected < oldSelect; --oldSelect, --list);
         for (; selected > oldSelect; ++oldSelect, ++list);
     }
+
+    CString getStudentString(Student& student);
 
     class CorrectScroll
     {
